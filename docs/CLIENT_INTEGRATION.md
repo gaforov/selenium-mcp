@@ -33,12 +33,12 @@ Use your client's MCP server settings to launch this server with one of these co
 Option A (built output):
 
 - command: node
-- args: ["D:/VSCodeProjects/selenium-mcp/dist/server.js"]
+- args: ["/absolute/path/to/selenium-mcp/dist/server.js"]
 
 Option B (development runtime):
 
 - command: npx
-- args: ["tsx", "D:/VSCodeProjects/selenium-mcp/src/server.ts"]
+- args: ["tsx", "/absolute/path/to/selenium-mcp/src/server.ts"]
 
 Prefer Option A for stable usage after building.
 
@@ -49,7 +49,7 @@ Copy-paste template (local build):
   "mcpServers": {
     "selenium-mcp": {
       "command": "node",
-      "args": ["D:/VSCodeProjects/selenium-mcp/dist/server.js"]
+      "args": ["/absolute/path/to/selenium-mcp/dist/server.js"]
     }
   }
 }
@@ -80,7 +80,7 @@ Copy-paste template (after npm publish):
 - Configure the MCP server in your IntelliJ-compatible AI/MCP plugin.
 - If the plugin uses form fields instead of JSON:
   - command: node
-  - args: D:/VSCodeProjects/selenium-mcp/dist/server.js
+  - args: /absolute/path/to/selenium-mcp/dist/server.js
 - Keep your Java/TestNG project separate; this MCP server is external and language-independent.
 
 ## First-run verification

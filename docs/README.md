@@ -11,7 +11,6 @@ This folder contains the authoritative documentation for selenium-mcp.
 - CLIENT_INTEGRATION.md: Using this MCP server from hosts, including IntelliJ workflows
 - DEVELOPMENT.md: Local development and contribution workflow
 - PUBLISHING.md: GitHub, npm, and MCP directory listing workflow
-- ANGIE_ALIGNMENT.md: External reference strategy and design decisions
 
 ## Current implementation status
 

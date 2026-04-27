@@ -9,8 +9,7 @@ Last updated: 2026-04-26
 - MCP server runs via stdio
 - Browser lifecycle manager is in place
 - Repo continuity instructions added in .github/copilot-instructions.md
-- Angie alignment reference added in docs/ANGIE_ALIGNMENT.md
-- Product strategy clarified: best-practices-first, not Angie-shaped implementation
+- Product strategy clarified: best-practices-first implementation
 - License finalized as MIT for free personal/academic/commercial use
 - Positioning clarified: TypeScript MCP server can be used from IntelliJ with Java/TestNG workflows
 - Documentation suite expanded (README + architecture + tool reference + client integration + development guide)
@@ -35,4 +34,4 @@ Last updated: 2026-04-26
 
 Use this prompt in a new chat to continue quickly:
 
-Continue selenium-mcp from docs/STATE.md, docs/ROADMAP.md, and docs/ANGIE_ALIGNMENT.md. Keep a best-practices-first architecture (not repo-mirroring), then implement Day 3 (wait_for_element, wait_until_visible, retry_click) with strict typing and actionable error payloads.
+Continue selenium-mcp from docs/STATE.md and docs/ROADMAP.md. Keep a best-practices-first architecture, then implement Day 3 (wait_for_element, wait_until_visible, retry_click) with strict typing and actionable error payloads.

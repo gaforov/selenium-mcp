@@ -58,7 +58,7 @@ Local repository setup (before npm publish):
   "mcpServers": {
     "selenium-mcp": {
       "command": "node",
-      "args": ["D:/VSCodeProjects/selenium-mcp/dist/server.js"]
+      "args": ["/absolute/path/to/selenium-mcp/dist/server.js"]
     }
   }
 }
@@ -118,7 +118,6 @@ Integration details are documented in docs/CLIENT_INTEGRATION.md.
 - docs/CLIENT_INTEGRATION.md: MCP host integration guidance
 - docs/PUBLISHING.md: GitHub, npm, and directory listing workflow
 - docs/DEVELOPMENT.md: Contributor and development workflow
-- docs/ANGIE_ALIGNMENT.md: External reference strategy
 
 ## MCP best-practice alignment
 

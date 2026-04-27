@@ -5,7 +5,6 @@
 - Read docs/README.md first for documentation map and scope.
 - Read docs/STATE.md next to get current implementation status.
 - Read docs/ROADMAP.md next to align with milestone sequencing.
-- Read docs/ANGIE_ALIGNMENT.md to preserve product strategy decisions.
 - Continue from the next unfinished roadmap day unless the user explicitly changes priority.
 
 ## Architecture rules
@@ -17,7 +16,7 @@
 - Return MCP responses using helpers in src/utils/toolResult.ts.
 - Use strict TypeScript and avoid any.
 - Treat external repos as references only; do not mirror their structure by default.
-- Prefer clearer abstractions and reliability even when this diverges from Angie tool design.
+- Prefer clear abstractions and reliability over mirroring external project structure.
 
 ## Reliability rules
 
