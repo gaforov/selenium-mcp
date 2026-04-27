@@ -85,19 +85,6 @@ Works with:
 
 For a deeper setup walkthrough, see docs/CLIENT_INTEGRATION.md.
 
-## Publishing and directory listing
-
-Publishing this repo to GitHub does not guarantee immediate automatic listing on MCP directories.
-
-Recommended process:
-
-1. Publish source to a public GitHub repository.
-2. Publish package to npm for one-command install.
-3. Submit/list manually on MCP directories (for example Glama) using their Add Server flow.
-4. Claim/verify ownership where the directory supports it.
-
-Detailed steps are in docs/PUBLISHING.md.
-
 ## Java and IntelliJ compatibility
 
 This server is language-agnostic and client-agnostic.
@@ -111,12 +98,9 @@ Integration details are documented in docs/CLIENT_INTEGRATION.md.
 ## Documentation
 
 - docs/README.md: Documentation index
-- docs/STATE.md: Current implementation status
-- docs/ROADMAP.md: Planned implementation sequence
 - docs/TOOL_REFERENCE.md: Tool contracts and examples
 - docs/ARCHITECTURE.md: Runtime flow and module boundaries
 - docs/CLIENT_INTEGRATION.md: MCP host integration guidance
-- docs/PUBLISHING.md: GitHub, npm, and directory listing workflow
 - docs/DEVELOPMENT.md: Contributor and development workflow
 
 ## MCP best-practice alignment

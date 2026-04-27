@@ -1,6 +1,10 @@
 node_modules/
 dist/
 docs/ANGIE_ALIGNMENT.md
+docs/PUBLISHING.md
+docs/ROADMAP.md
+docs/STATE.md
+.github/copilot-instructions.md
 coverage/
 .nyc_output/
 .cache/

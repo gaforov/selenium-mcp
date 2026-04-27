@@ -37,7 +37,6 @@ npm run start
 3. Implement handler with try/catch and structured error responses
 4. Register tool in src/tools/index.ts
 5. Update docs/TOOL_REFERENCE.md
-6. Update docs/STATE.md if milestone status changes
 
 ## Documentation workflow
 
@@ -45,8 +44,8 @@ When behavior changes:
 
 1. Update README.md for high-level changes
 2. Update docs/TOOL_REFERENCE.md for contract changes
-3. Update docs/STATE.md for progress snapshots
-4. Update docs/ROADMAP.md only when strategic sequencing changes
+3. Update docs/ARCHITECTURE.md when runtime flow or module boundaries change
+4. Update docs/CLIENT_INTEGRATION.md when setup or client behavior changes
 
 ## Release readiness checklist
 
