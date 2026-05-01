@@ -132,6 +132,7 @@ Expected tool flow:
 - [Client integration](docs/CLIENT_INTEGRATION.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Development guide](docs/DEVELOPMENT.md)
+- [Changelog](CHANGELOG.md)
 
 ## Development
 
