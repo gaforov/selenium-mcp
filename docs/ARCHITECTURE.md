@@ -9,16 +9,18 @@ selenium-mcp is a TypeScript MCP server using stdio transport and a modular tool
 - src/tools/index.ts: Tool registration composition root
 - src/tools/\*.ts: One module per tool
 - src/tools/shared/\*.ts: Reusable selector and wait abstractions
+- src/resources/index.ts: MCP read-only resources
 - src/utils/toolResult.ts: Unified tool response helpers
 
 ## Runtime flow
 
 1. Process starts and creates McpServer
-2. Tool modules are registered
+2. Tool and resource modules are registered
 3. Server connects via StdioServerTransport
-4. MCP client invokes tools over JSON-RPC
+4. MCP client invokes tools or reads resources over JSON-RPC
 5. Tool validates input, executes browser action, returns MCP response
-6. On SIGINT/SIGTERM/fatal error, server attempts graceful shutdown
+6. Resource handlers return browser status or page snapshots without mutating browser state
+7. On SIGINT/SIGTERM/fatal error, server attempts graceful shutdown
 
 ## Design principles
 
@@ -46,10 +48,11 @@ Current reliability mechanisms:
 
 - Visibility/clickability waits for interaction tools
 - Structured error payloads with selector and timeout context
+- Retry click helper for transient UI failures
 - Graceful process shutdown
 
 Planned reliability additions:
 
-- wait_for_element
-- wait_until_visible
-- retry_click
+- Integration smoke tests with real browsers
+- Optional multi-session isolation
+- Browser diagnostics backed by WebDriver BiDi where available

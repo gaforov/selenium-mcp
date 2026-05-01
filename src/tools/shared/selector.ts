@@ -6,7 +6,9 @@ export const selectorStrategySchema = z.enum([
     "xpath",
     "id",
     "name",
+    "class",
     "className",
+    "tag",
     "tagName",
     "linkText",
     "partialLinkText"
@@ -36,8 +38,10 @@ export function selectorToBy(selector: SelectorInput): By {
             return By.id(selector.value);
         case "name":
             return By.name(selector.value);
+        case "class":
         case "className":
             return By.className(selector.value);
+        case "tag":
         case "tagName":
             return By.tagName(selector.value);
         case "linkText":

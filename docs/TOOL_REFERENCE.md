@@ -1,70 +1,56 @@
 # Tool Reference
 
-This document describes tools currently implemented in selenium-mcp.
+## Selector Contract
 
-## Shared selector contract
-
-Tools that interact with elements use this selector object:
+Element tools use this selector object:
 
 ```json
 {
-  "by": "css | xpath | id | name | className | tagName | linkText | partialLinkText",
+  "by": "css | xpath | id | name | class | className | tag | tagName | linkText | partialLinkText",
   "value": "string"
 }
 ```
 
-Shared timeout contract:
+Shared timeout:
 
-- timeoutMs: integer, default 10000, min 100, max 60000
+- `timeoutMs`: integer, default `10000`, min `100`, max `60000`
 
-## Tool: start_browser
+## Browser Lifecycle
 
-Description:
+### start_browser
 
-- Starts a Selenium browser session.
-
-Input schema:
+Starts Chrome, Firefox, or Edge.
 
 ```json
 {
-  "browser": "chrome | firefox | edge (default: chrome)",
-  "headless": "boolean (default: false)"
+  "browser": "chrome",
+  "headless": false,
+  "browserArgs": ["--disable-gpu"],
+  "pageLoadTimeoutMs": 30000,
+  "scriptTimeoutMs": 30000,
+  "windowSize": { "width": 1440, "height": 900 }
 }
 ```
 
-Success response includes structured status:
+### stop_browser
 
-- running
-- browser
-- headless
-- startedAt
+Stops the current browser session.
 
-## Tool: open_url
+## Navigation And Page Info
 
-Description:
+- `open_url`: navigate to a URL
+- `navigate`: alias-friendly URL navigation
+- `get_current_url`: return current URL
+- `get_title`: return page title
+- `get_page_source`: return page source with optional truncation
 
-- Navigates the active browser to a URL.
+## Element Discovery And Waits
 
-Input schema:
+- `find_element`: locate an element and return metadata
+- `wait_for_element`: wait for existence, optionally visibility
+- `wait_until_visible`: wait for visibility
 
-```json
-{
-  "url": "valid URL"
-}
-```
-
-Success response includes:
-
-- currentUrl
-- title
-
-## Tool: click
-
-Description:
-
-- Waits for an element to become visible and enabled, then clicks it.
-
-Input schema:
+Example:
 
 ```json
 {
@@ -73,15 +59,16 @@ Input schema:
 }
 ```
 
-Failure payload includes selector and timeout context.
+## Element Interaction
 
-## Tool: type
+- `click`: wait until visible/enabled, then click
+- `retry_click`: retry transient click failures
+- `interact`: `click`, `double_click`, `right_click`, or `hover`
+- `type`: clear/type text and optionally submit with Enter
+- `press_key`: press a key against the active element
+- `upload_file`: send an absolute file path to a file input
 
-Description:
-
-- Waits for element visibility, optionally clears, types text, optionally submits with Enter.
-
-Input schema:
+Type example:
 
 ```json
 {
@@ -93,51 +80,42 @@ Input schema:
 }
 ```
 
-Success payload includes:
+## Reading Data
 
-- typedLength
-- clearFirst
-- submit
-- selector and timeout details
+- `get_text`: read visible text
+- `get_attribute`: read an element attribute/property
+- `take_screenshot`: capture PNG screenshot as base64
+- `execute_script`: run synchronous JavaScript in the page
 
-## Tool: get_text
+## Assertions
 
-Description:
+- `assert_text`: assert visible text `equals`, `contains`, or `matches`
+- `assert_visible`: assert an element becomes visible
+- `assert_attribute`: assert an attribute/property `equals`, `contains`, or `matches`
 
-- Waits for element visibility and returns element text.
+## Browser Context
 
-Input schema:
+- `window`: `list`, `switch`, `switch_latest`, `new_tab`, `new_window`, `close`
+- `frame`: `switch`, `parent`, `default`
+- `alert`: `get_text`, `accept`, `dismiss`, `send_text`
+- `add_cookie`: add one cookie
+- `get_cookies`: read one or all cookies
+- `delete_cookie`: delete one or all cookies
 
-```json
-{
-  "selector": { "by": "xpath", "value": "//h1" },
-  "timeoutMs": 10000,
-  "trim": true
-}
-```
+## MCP Resources
 
-Success payload includes:
+### browser-status://current
 
-- text
-- trim
-- selector and timeout details
+Returns JSON status for the current browser session.
 
-## Tool: stop_browser
+### accessibility://current
 
-Description:
+Returns a compact JSON snapshot of visible headings and interactive elements.
 
-- Stops active browser session if it exists.
+## Error Semantics
 
-Input schema:
+Tool failures return:
 
-- No input arguments.
-
-Success response includes final status snapshot.
-
-## Error semantics
-
-All tool handlers follow a consistent pattern:
-
-- Return content text for both success and failure
-- Set isError to true on failures
-- Include structuredContent for machine-readable context when applicable
+- `isError: true`
+- Human-readable text content
+- Structured context such as selector, timeout, attempted action, or URL when useful

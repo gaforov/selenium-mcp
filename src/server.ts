@@ -1,6 +1,9 @@
+#!/usr/bin/env node
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { driverManager } from "./driver/driverManager.js";
+import { registerCoreResources } from "./resources/index.js";
 import { registerCoreTools } from "./tools/index.js";
 
 const server = new McpServer({
@@ -9,6 +12,7 @@ const server = new McpServer({
 });
 
 registerCoreTools(server);
+registerCoreResources(server);
 
 let shuttingDown = false;
 

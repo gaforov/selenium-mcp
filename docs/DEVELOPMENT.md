@@ -17,6 +17,7 @@ npm install
 ```bash
 npm run typecheck
 npm run build
+npm test
 npm run dev
 npm run start
 ```
@@ -29,6 +30,7 @@ npm run start
 - Keep server bootstrap logic in src/server.ts only
 - Return MCP-compatible content responses with isError on failure
 - Use stderr logging only for stdio servers
+- Keep package metadata and client setup docs current when npm behavior changes
 
 ## Adding a new tool
 
@@ -37,6 +39,7 @@ npm run start
 3. Implement handler with try/catch and structured error responses
 4. Register tool in src/tools/index.ts
 5. Update docs/TOOL_REFERENCE.md
+6. Add or update tests when shared contracts change
 
 ## Documentation workflow
 
@@ -51,6 +54,8 @@ When behavior changes:
 
 - typecheck passes
 - build passes
+- tests pass
+- npm pack --dry-run includes dist/server.js and public docs only
 - server starts in stdio mode
 - tool contracts documented
 - license and README are current

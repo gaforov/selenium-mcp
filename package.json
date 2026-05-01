@@ -1,18 +1,47 @@
 {
-  "name": "selenium-mcp",
+  "name": "@gaforov/selenium-mcp",
   "version": "0.1.0",
   "description": "Selenium MCP server with modular tools and strict TypeScript.",
   "main": "dist/server.js",
+  "bin": {
+    "selenium-mcp": "dist/server.js"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "docs/ARCHITECTURE.md",
+    "docs/CLIENT_INTEGRATION.md",
+    "docs/DEVELOPMENT.md",
+    "docs/README.md",
+    "docs/TOOL_REFERENCE.md"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node -e \"require('node:fs').chmodSync('dist/server.js', 0o755)\"",
     "typecheck": "tsc --noEmit",
     "dev": "tsx src/server.ts",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test": "node --test test/*.test.mjs",
+    "prepack": "npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "selenium",
+    "webdriver",
+    "browser-automation",
+    "testing"
+  ],
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaforov/selenium-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gaforov/selenium-mcp/issues"
+  },
+  "homepage": "https://github.com/gaforov/selenium-mcp#readme",
   "engines": {
     "node": ">=20"
   },

@@ -1,48 +1,79 @@
 # Client Integration
 
-This MCP server is language-agnostic and client-agnostic.
+This server runs locally over MCP stdio. Your AI client starts the Node process, then calls Selenium tools through MCP. Your app under test can be Java, TestNG, JUnit, JavaScript, Python, or anything else; the MCP server is separate from your test project.
 
-You can keep your test automation stack in Java + TestNG while using this MCP server from an AI host in IntelliJ or other MCP-capable clients.
-
-## Important concept
-
-- The MCP server runtime language (TypeScript/Node.js) is independent from your test project language (Java/TestNG).
-- Your AI client calls MCP tools; your Java codebase does not need to be converted.
-
-## Local run options
-
-Development mode:
+## Build From Source
 
 ```bash
-npm run dev
-```
-
-Production mode:
-
-```bash
+git clone https://github.com/gaforov/selenium-mcp.git
+cd selenium-mcp
+npm install
 npm run build
-npm run start
 ```
 
-Use build/start mode for stable client integrations.
+Use this command in clients when running from a local checkout:
 
-## Generic MCP client configuration
+```text
+node /absolute/path/to/selenium-mcp/dist/server.js
+```
 
-Use your client's MCP server settings to launch this server with one of these commands:
+After npm publish, use this command instead:
 
-Option A (built output):
+```text
+npx -y @gaforov/selenium-mcp@latest
+```
 
-- command: node
-- args: ["/absolute/path/to/selenium-mcp/dist/server.js"]
+## IntelliJ IDEA
 
-Option B (development runtime):
+Use any IntelliJ AI plugin or MCP-capable client that supports local stdio MCP servers.
 
-- command: npx
-- args: ["tsx", "/absolute/path/to/selenium-mcp/src/server.ts"]
+Local checkout configuration:
 
-Prefer Option A for stable usage after building.
+- Name: `selenium-mcp`
+- Command: `node`
+- Arguments: `/absolute/path/to/selenium-mcp/dist/server.js`
 
-Copy-paste template (local build):
+After npm publish:
+
+- Name: `selenium-mcp`
+- Command: `npx`
+- Arguments: `-y @gaforov/selenium-mcp@latest`
+
+Your Java/TestNG or Java/JUnit project stays unchanged. The assistant uses MCP tools to control a real browser while you keep writing tests in IntelliJ.
+
+## VS Code
+
+Use a local MCP server entry like this:
+
+```json
+{
+  "servers": {
+    "selenium-mcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/selenium-mcp/dist/server.js"]
+    }
+  }
+}
+```
+
+For npm:
+
+```json
+{
+  "servers": {
+    "selenium-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@gaforov/selenium-mcp@latest"]
+    }
+  }
+}
+```
+
+## Cursor
+
+Add to your Cursor MCP configuration, commonly `.cursor/mcp.json`:
 
 ```json
 {
@@ -55,52 +86,94 @@ Copy-paste template (local build):
 }
 ```
 
-Copy-paste template (after npm publish):
+For npm:
 
 ```json
 {
   "mcpServers": {
     "selenium-mcp": {
       "command": "npx",
-      "args": ["-y", "<your-npm-package-name>@latest"]
+      "args": ["-y", "@gaforov/selenium-mcp@latest"]
     }
   }
 }
 ```
 
-## IDE and client notes
+## Claude Desktop
 
-### VS Code and Cursor-style MCP clients
+Add to your Claude Desktop MCP configuration:
 
-- Most clients use a JSON-based mcpServers config.
-- Use the templates above and restart the client after editing config.
+```json
+{
+  "mcpServers": {
+    "selenium-mcp": {
+      "command": "npx",
+      "args": ["-y", "@gaforov/selenium-mcp@latest"]
+    }
+  }
+}
+```
 
-### IntelliJ workflow notes
+For local development, replace `command` and `args` with the local `node .../dist/server.js` form.
 
-- Configure the MCP server in your IntelliJ-compatible AI/MCP plugin.
-- If the plugin uses form fields instead of JSON:
-  - command: node
-  - args: /absolute/path/to/selenium-mcp/dist/server.js
-- Keep your Java/TestNG project separate; this MCP server is external and language-independent.
+## Claude Code
 
-## First-run verification
+After npm publish:
 
-After configuring your client, test this sequence:
+```bash
+claude mcp add selenium-mcp -- npx -y @gaforov/selenium-mcp@latest
+```
 
-1. start_browser
-2. open_url
-3. click or type
-4. get_text
-5. stop_browser
+From a local checkout:
 
-If all calls succeed, your MCP integration is working.
+```bash
+claude mcp add selenium-mcp -- node /absolute/path/to/selenium-mcp/dist/server.js
+```
+
+## Goose
+
+After npm publish:
+
+```bash
+goose session --with-extension "npx -y @gaforov/selenium-mcp@latest"
+```
+
+## Windsurf And Other MCP Clients
+
+Most MCP clients accept the same stdio JSON shape:
+
+```json
+{
+  "mcpServers": {
+    "selenium-mcp": {
+      "command": "npx",
+      "args": ["-y", "@gaforov/selenium-mcp@latest"]
+    }
+  }
+}
+```
+
+## First-Run Verification
+
+Ask your assistant:
+
+```text
+Use selenium-mcp to start Chrome, open https://example.com, read the page title, take a screenshot, and close the browser.
+```
+
+Expected tools:
+
+1. `start_browser`
+2. `navigate`
+3. `get_title`
+4. `take_screenshot`
+5. `stop_browser`
 
 ## Troubleshooting
 
-If the MCP client fails to connect:
-
-- Ensure Node.js 20+ is installed
-- Confirm build artifacts exist when using dist/server.js
-- Verify no process writes logs to stdout
-- Check stderr logs for startup errors
-- If using npm package mode, confirm package name and version are correct
+- Confirm Node.js 20+ is installed: `node --version`
+- Confirm the project is built when using local `dist/server.js`: `npm run build`
+- Use `node`, not `npm run start`, inside MCP configs for local checkout usage
+- Use `npx -y @gaforov/selenium-mcp@latest` after npm publish
+- Do not write logs to stdout in stdio MCP servers; this project logs to stderr
+- If PowerShell blocks `npm.ps1`, run `npm.cmd run build` or use a terminal with script execution enabled

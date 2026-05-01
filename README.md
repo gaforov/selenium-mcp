@@ -1,57 +1,51 @@
 # selenium-mcp
 
-Selenium MCP server built with TypeScript and a modular architecture.
+Selenium MCP server for browser automation through Model Context Protocol clients.
 
-This repository is designed for reliability, maintainability, and AI-friendly tool contracts.
+It is built with TypeScript, the official MCP SDK, Selenium WebDriver, strict zod input validation, explicit waits, and structured responses that are useful to both humans and AI agents.
 
-## Highlights
+## Features
 
-- MCP stdio server using official TypeScript SDK patterns
-- Strict TypeScript + zod validation at tool boundaries
-- Explicit wait abstractions for resilient UI interactions
-- Structured tool responses for both humans and LLM hosts
-- Public MIT license for personal, academic, and commercial use
+- Launch Chrome, Firefox, or Edge
+- Navigate pages and read URL/title/source
+- Find, click, type, hover, right-click, double-click, and retry-click elements
+- Read text and attributes
+- Press keyboard keys
+- Capture screenshots
+- Upload files through file inputs
+- Execute JavaScript
+- Assert visible text, attributes, and visibility
+- Manage tabs/windows, frames, alerts, and cookies
+- Expose browser status and accessibility snapshot MCP resources
 
-## Implemented tools
+## What's New In v0.1.0
 
-- start_browser
-- open_url
-- click
-- type
-- get_text
-- stop_browser
+- First public npm release: `@gaforov/selenium-mcp`
+- Expanded toolset for end-to-end browser automation, assertions, and diagnostics
+- Added MCP resources for browser status and accessibility snapshot context
+- Added broad client setup documentation for IntelliJ, VS Code, Cursor, Claude, Goose, and Windsurf
+- Added CI workflow and baseline tests for shared contracts
 
-## Quick start
-
-Requirements:
+## Requirements
 
 - Node.js 20+
 - Chrome, Firefox, or Edge installed
 
-Install:
+Selenium Manager handles browser drivers for supported local browsers.
+
+## Quick Start From Source
 
 ```bash
+git clone https://github.com/gaforov/selenium-mcp.git
+cd selenium-mcp
 npm install
-```
-
-Run in development:
-
-```bash
-npm run dev
-```
-
-Build and run:
-
-```bash
 npm run build
-npm run start
+npm start
 ```
 
-## Setup in MCP clients (copy-paste)
+## MCP Client Config
 
-Use one of the following MCP server configurations in your client.
-
-Local repository setup (before npm publish):
+Local source checkout:
 
 ```json
 {
@@ -64,56 +58,89 @@ Local repository setup (before npm publish):
 }
 ```
 
-Npm package setup (after publish):
+After npm publish:
 
 ```json
 {
   "mcpServers": {
     "selenium-mcp": {
       "command": "npx",
-      "args": ["-y", "<your-npm-package-name>@latest"]
+      "args": ["-y", "@gaforov/selenium-mcp@latest"]
     }
   }
 }
 ```
 
-Works with:
+For IntelliJ IDEA, VS Code, Cursor, Claude Desktop, Claude Code, Goose, and Windsurf setup notes, see [docs/CLIENT_INTEGRATION.md](docs/CLIENT_INTEGRATION.md).
 
-- VS Code MCP-capable clients
-- Cursor and similar MCP clients using mcpServers JSON
-- IntelliJ MCP-capable plugins/clients (Java and TestNG projects supported)
+## First Prompt To Try
 
-For a deeper setup walkthrough, see docs/CLIENT_INTEGRATION.md.
+Ask your MCP-capable assistant:
 
-## Java and IntelliJ compatibility
+```text
+Use selenium-mcp to open Chrome, navigate to https://example.com, read the page title, take a screenshot, and close the browser.
+```
 
-This server is language-agnostic and client-agnostic.
+Expected tool flow:
 
-- You can use it from IntelliJ MCP-capable AI clients.
-- Your automation project can remain Java + TestNG.
-- You do not need to rewrite your tests in TypeScript.
+1. `start_browser`
+2. `navigate`
+3. `get_title`
+4. `take_screenshot`
+5. `stop_browser`
 
-Integration details are documented in docs/CLIENT_INTEGRATION.md.
+## Implemented Tools
+
+- `start_browser`
+- `open_url`
+- `navigate`
+- `find_element`
+- `wait_for_element`
+- `wait_until_visible`
+- `click`
+- `retry_click`
+- `interact`
+- `type`
+- `get_text`
+- `get_attribute`
+- `assert_text`
+- `assert_visible`
+- `assert_attribute`
+- `press_key`
+- `take_screenshot`
+- `get_current_url`
+- `get_title`
+- `get_page_source`
+- `execute_script`
+- `upload_file`
+- `window`
+- `frame`
+- `alert`
+- `add_cookie`
+- `get_cookies`
+- `delete_cookie`
+- `stop_browser`
+
+## MCP Resources
+
+- `browser-status://current`
+- `accessibility://current`
 
 ## Documentation
 
-- docs/README.md: Documentation index
-- docs/TOOL_REFERENCE.md: Tool contracts and examples
-- docs/ARCHITECTURE.md: Runtime flow and module boundaries
-- docs/CLIENT_INTEGRATION.md: MCP host integration guidance
-- docs/DEVELOPMENT.md: Contributor and development workflow
+- [Tool reference](docs/TOOL_REFERENCE.md)
+- [Client integration](docs/CLIENT_INTEGRATION.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Development guide](docs/DEVELOPMENT.md)
 
-## MCP best-practice alignment
+## Development
 
-This project aligns with official MCP TypeScript server guidance:
-
-- Uses McpServer with stdio transport
-- Uses zod input schemas for tools
-- Uses stderr logging for stdio safety
-- Keeps server bootstrap and tool logic modular
+```bash
+npm run typecheck
+npm run build
+npm test
+```
 
 ## License
 
-MIT. Free for personal, academic, and commercial use.
-
-See LICENSE for the full legal text. Commercial use is explicitly permitted under MIT, including internal company usage and redistribution/sale of software including this code, provided the license notice is retained.
+MIT. See [LICENSE](LICENSE).
