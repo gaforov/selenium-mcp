@@ -84,7 +84,7 @@ Type example:
 
 - `get_text`: read visible text
 - `get_attribute`: read an element attribute/property
-- `take_screenshot`: capture PNG screenshot as base64
+- `take_screenshot`: capture PNG screenshot, optionally save to absolute `savePath` (directories auto-created), and optionally return base64
 - `execute_script`: run synchronous JavaScript in the page
 
 ## Assertions

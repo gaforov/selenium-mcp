@@ -48,3 +48,34 @@ export function registerCoreTools(server: McpServer): void {
     registerCookieTools(server);
     registerStopBrowserTool(server);
 }
+
+// Exported list of core tool names for CLI listing and external inspection.
+export const CORE_TOOL_NAMES = [
+    "start_browser",
+    "open_url",
+    "navigate",
+    "click",
+    "interact",
+    "type",
+    "get_text",
+    "get_attribute",
+    "assert_text",
+    "assert_visible",
+    "assert_attribute",
+    "wait_for_element",
+    "retry_click",
+    "press_key",
+    "take_screenshot",
+    "get_current_url",
+    "get_title",
+    "get_page_source",
+    "execute_script",
+    "upload_file",
+    "window",
+    "frame",
+    "alert",
+    "add_cookie",
+    "get_cookies",
+    "delete_cookie",
+    "stop_browser"
+];

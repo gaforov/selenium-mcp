@@ -7,6 +7,7 @@ This folder contains the authoritative documentation for selenium-mcp.
 - TOOL_REFERENCE.md: Current tool contracts and examples
 - ARCHITECTURE.md: Code structure and runtime flow
 - CLIENT_INTEGRATION.md: Using this MCP server from hosts, including IntelliJ workflows
+- INTELLIJ_USAGE.md: Step-by-step guide to setting up and using selenium-mcp in IntelliJ IDEA
 - DEVELOPMENT.md: Local development and contribution workflow
 
 ## Current implementation status

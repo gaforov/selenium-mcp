@@ -25,19 +25,35 @@ npx -y @gaforov/selenium-mcp@latest
 
 ## IntelliJ IDEA
 
-Use any IntelliJ AI plugin or MCP-capable client that supports local stdio MCP servers.
+IntelliJ IDEA 2026.1 includes the bundled MCP Server plugin. In IntelliJ, go to **Settings** → **Tools** → **MCP Server**, enable it, and accept the warning if shown.
+
+If IntelliJ opens or offers an `mcp.json` client settings file, yes, paste the configuration there.
 
 Local checkout configuration:
 
-- Name: `selenium-mcp`
-- Command: `node`
-- Arguments: `/absolute/path/to/selenium-mcp/dist/server.js`
+```json
+{
+  "mcpServers": {
+    "selenium-mcp": {
+      "command": "node",
+      "args": ["/absolute/path/to/selenium-mcp/dist/server.js"]
+    }
+  }
+}
+```
 
 After npm publish:
 
-- Name: `selenium-mcp`
-- Command: `npx`
-- Arguments: `-y @gaforov/selenium-mcp@latest`
+```json
+{
+  "mcpServers": {
+    "selenium-mcp": {
+      "command": "npx",
+      "args": ["-y", "@gaforov/selenium-mcp@latest"]
+    }
+  }
+}
+```
 
 Your Java/TestNG or Java/JUnit project stays unchanged. The assistant uses MCP tools to control a real browser while you keep writing tests in IntelliJ.
 
