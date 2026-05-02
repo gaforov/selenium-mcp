@@ -1,6 +1,6 @@
 {
   "name": "@gaforov/selenium-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Selenium MCP server with modular tools and strict TypeScript.",
   "main": "dist/server.js",
   "bin": {
