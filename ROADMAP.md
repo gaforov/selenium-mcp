@@ -11,6 +11,12 @@ New tools (each follows the existing per-tool module pattern, e.g. `src/tools/cl
 - [ ] `back` / `forward` / `refresh` — browser history navigation
 - [ ] `clear_field` — clear an input before retyping
 
+Consolidate duplicate tools (breaking change — cheap now at low adoption; note in CHANGELOG):
+
+- [ ] Remove `open_url` — byte-for-byte duplicate of `navigate` (both call `driver.get(url)`). Keep `navigate` (industry-standard name).
+- [ ] Remove `wait_until_visible` — equivalent to `wait_for_element` with `visible: true`. Keep `wait_for_element` (strictly more capable).
+- [ ] Keep `find_element` — borderline but returns element text/metadata that `wait_for_element` doesn't; sharpen its description to say how it differs.
+
 Stretch goals:
 
 - [ ] `drag_and_drop` — sliders, kanban boards, drop zones
