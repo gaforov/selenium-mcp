@@ -25,24 +25,11 @@ npx -y @gaforov/selenium-mcp@latest
 
 ## IntelliJ IDEA
 
-IntelliJ IDEA 2026.1 includes the bundled MCP Server plugin. In IntelliJ, go to **Settings** → **Tools** → **MCP Server**, enable it, and accept the warning if shown.
+IntelliJ has **two separate MCP entry points**, and they use different config formats. Pick the one that matches the assistant you use.
 
-If IntelliJ opens or offers an `mcp.json` client settings file, yes, paste the configuration there.
+### JetBrains AI Assistant (native MCP plugin)
 
-Local checkout configuration:
-
-```json
-{
-  "mcpServers": {
-    "selenium-mcp": {
-      "command": "node",
-      "args": ["/absolute/path/to/selenium-mcp/dist/server.js"]
-    }
-  }
-}
-```
-
-After npm publish:
+IntelliJ IDEA 2026.1 includes the bundled MCP Server plugin. Go to **Settings** → **Tools** → **MCP Server**, enable it, and accept the warning if shown. If IntelliJ opens or offers an `mcp.json` client settings file, paste the configuration there. This path uses the `mcpServers` key:
 
 ```json
 {
@@ -55,7 +42,27 @@ After npm publish:
 }
 ```
 
-Your Java/TestNG or Java/JUnit project stays unchanged. The assistant uses MCP tools to control a real browser while you keep writing tests in IntelliJ.
+For a local checkout, replace `command`/`args` with the `node /absolute/path/to/selenium-mcp/dist/server.js` form.
+
+### GitHub Copilot plugin (in IntelliJ)
+
+If you drive Copilot Chat instead, this is a Copilot feature and uses **Copilot's** format, not the JetBrains one. Go to **Settings** → **Tools** → **GitHub Copilot** → **Model Context Protocol (MCP)** → **Configure**, which opens an `mcp.json`. This path uses the `servers` key with `"type": "stdio"`:
+
+```json
+{
+  "servers": {
+    "selenium": {
+      "command": "npx",
+      "args": ["-y", "@gaforov/selenium-mcp@latest"],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+Then switch Copilot Chat to **Agent mode** for the tools to be callable.
+
+Either way, your Java/TestNG or Java/JUnit project stays unchanged. The assistant uses MCP tools to control a real browser while you keep writing tests in IntelliJ.
 
 ## VS Code
 
