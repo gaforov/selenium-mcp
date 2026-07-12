@@ -155,6 +155,7 @@ If `SELENIUM_MCP_TRACE_PATH` is omitted, the default is `logs/selenium-mcp-trace
 - [Architecture](docs/ARCHITECTURE.md)
 - [Development guide](docs/DEVELOPMENT.md)
 - [Changelog](CHANGELOG.md)
+- [Roadmap](ROADMAP.md)
 
 ## Contributing
 
