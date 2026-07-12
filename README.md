@@ -1,6 +1,6 @@
 # selenium-mcp
 
-Selenium MCP server for AI agents — **38 tools** for real-browser automation: navigation, clicking, typing, assertions, screenshots, multi-session management, page snapshots with stable element refs, persistent selector hints, and batched multi-step execution.
+Selenium MCP server for AI agents — **39 tools** for real-browser automation: navigation, clicking, typing, assertions, screenshots, multi-session management, page snapshots with stable element refs, persistent selector hints, and batched multi-step execution.
 
 [![npm version](https://img.shields.io/npm/v/%40gaforov%2Fselenium-mcp)](https://www.npmjs.com/package/@gaforov/selenium-mcp)
 [![npm downloads](https://img.shields.io/npm/dw/%40gaforov%2Fselenium-mcp)](https://www.npmjs.com/package/@gaforov/selenium-mcp)
@@ -100,7 +100,7 @@ The agent chains `start_browser` → `navigate` → `get_title` → `take_screen
 - **Agent-friendly errors** — every response is structured and validated with zod, so agents can recover instead of stalling
 - **Optional tracing** — NDJSON trace of every tool call for debugging and auditing
 
-## Tools (38)
+## Tools (39)
 
 | Category | Tools |
 |---|---|
