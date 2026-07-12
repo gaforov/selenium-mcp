@@ -1,4 +1,5 @@
 import { Builder, type WebDriver } from "selenium-webdriver";
+import { randomUUID } from "node:crypto";
 import chrome from "selenium-webdriver/chrome.js";
 import edge from "selenium-webdriver/edge.js";
 import firefox from "selenium-webdriver/firefox.js";
@@ -19,7 +20,19 @@ export interface StartBrowserOptions {
     } | null;
 }
 
-interface BrowserStatus {
+export interface BrowserSessionStatus {
+    sessionId: string;
+    browser: BrowserName;
+    headless: boolean;
+    browserArgs: string[];
+    windowSize: {
+        width: number;
+        height: number;
+    } | null;
+    startedAt: string;
+}
+
+export interface BrowserStatus {
     running: boolean;
     browser: BrowserName | null;
     headless: boolean | null;
@@ -29,31 +42,48 @@ interface BrowserStatus {
         height: number;
     } | null;
     startedAt: string | null;
+    activeSessionId: string | null;
+    sessionCount: number;
+}
+
+interface ManagedSession {
+    sessionId: string;
+    driver: WebDriver;
+    browser: BrowserName;
+    headless: boolean;
+    browserArgs: string[];
+    windowSize: {
+        width: number;
+        height: number;
+    } | null;
+    startedAt: string;
 }
 
 class DriverManager {
-    private driver: WebDriver | null = null;
-    private browser: BrowserName | null = null;
-    private headless: boolean | null = null;
-    private browserArgs: string[] = [];
-    private windowSize: {
-        width: number;
-        height: number;
-    } | null = null;
-    private startedAt: string | null = null;
+    private sessions = new Map<string, ManagedSession>();
+    private activeSessionId: string | null = null;
 
     async start(options: StartBrowserOptions): Promise<BrowserStatus> {
-        if (this.driver) {
-            throw new Error("A browser session is already running. Use stop_browser first.");
+        if (this.sessions.size > 0) {
+            throw new Error(
+                "A browser session is already running. Use stop_browser first or use session_create for multi-session flows."
+            );
+        }
+
+        await this.createSession(options);
+
+        return this.status();
+    }
+
+    async createSession(options: StartBrowserOptions, requestedSessionId?: string): Promise<BrowserSessionStatus> {
+        const sessionId = requestedSessionId?.trim() || randomUUID();
+
+        if (this.sessions.has(sessionId)) {
+            throw new Error(`Session already exists: ${sessionId}`);
         }
 
         const driver = await this.buildDriver(options);
-        this.driver = driver;
-        this.browser = options.browser;
-        this.headless = options.headless;
-        this.browserArgs = options.browserArgs;
-        this.windowSize = options.windowSize;
-        this.startedAt = new Date().toISOString();
+        const startedAt = new Date().toISOString();
 
         await driver.manage().setTimeouts({
             implicit: 0,
@@ -68,42 +98,121 @@ class DriverManager {
             });
         }
 
-        return this.status();
+        const session: ManagedSession = {
+            sessionId,
+            driver,
+            browser: options.browser,
+            headless: options.headless,
+            browserArgs: options.browserArgs,
+            windowSize: options.windowSize,
+            startedAt
+        };
+
+        this.sessions.set(sessionId, session);
+        this.activeSessionId = sessionId;
+
+        return this.toSessionStatus(session);
     }
 
     getOrThrow(): WebDriver {
-        if (!this.driver) {
+        const active = this.getActiveSession();
+
+        if (!active) {
             throw new Error("Browser is not running. Call start_browser first.");
         }
 
-        return this.driver;
+        return active.driver;
     }
 
-    async stop(): Promise<BrowserStatus> {
-        if (this.driver) {
-            try {
-                await this.driver.quit();
-            } finally {
-                this.driver = null;
-                this.browser = null;
-                this.headless = null;
-                this.browserArgs = [];
-                this.windowSize = null;
-                this.startedAt = null;
+    getActiveSessionId(): string | null {
+        return this.activeSessionId;
+    }
+
+    listSessions(): BrowserSessionStatus[] {
+        return Array.from(this.sessions.values()).map((session) => this.toSessionStatus(session));
+    }
+
+    selectSession(sessionId: string): BrowserSessionStatus {
+        const session = this.sessions.get(sessionId);
+        if (!session) {
+            throw new Error(`Session not found: ${sessionId}`);
+        }
+
+        this.activeSessionId = sessionId;
+        return this.toSessionStatus(session);
+    }
+
+    async destroySession(sessionId: string): Promise<BrowserStatus> {
+        const session = this.sessions.get(sessionId);
+        if (!session) {
+            throw new Error(`Session not found: ${sessionId}`);
+        }
+
+        try {
+            await session.driver.quit();
+        } finally {
+            this.sessions.delete(sessionId);
+
+            if (this.activeSessionId === sessionId) {
+                const nextSession = this.sessions.keys().next().value;
+                this.activeSessionId = nextSession ?? null;
             }
         }
 
         return this.status();
     }
 
+    async stop(): Promise<BrowserStatus> {
+        const activeSessionId = this.activeSessionId;
+
+        if (!activeSessionId) {
+            return this.status();
+        }
+
+        return this.destroySession(activeSessionId);
+    }
+
+    async stopAll(): Promise<BrowserStatus> {
+        const sessionIds = Array.from(this.sessions.keys());
+
+        for (const sessionId of sessionIds) {
+            await this.destroySession(sessionId);
+        }
+
+        return this.status();
+    }
+
     status(): BrowserStatus {
+        const active = this.getActiveSession();
+
         return {
-            running: this.driver !== null,
-            browser: this.browser,
-            headless: this.headless,
-            browserArgs: this.browserArgs,
-            windowSize: this.windowSize,
-            startedAt: this.startedAt
+            running: active !== undefined,
+            browser: active?.browser ?? null,
+            headless: active?.headless ?? null,
+            browserArgs: active?.browserArgs ?? [],
+            windowSize: active?.windowSize ?? null,
+            startedAt: active?.startedAt ?? null,
+            activeSessionId: this.activeSessionId,
+            sessionCount: this.sessions.size
+        };
+    }
+
+    private getActiveSession(): ManagedSession | undefined {
+        if (!this.activeSessionId) {
+            return undefined;
+        }
+
+        return this.sessions.get(this.activeSessionId);
+    }
+
+    private toSessionStatus(session: ManagedSession): BrowserSessionStatus {
+        return {
+            sessionId: session.sessionId,
+            browser: session.browser,
+            headless: session.headless,
+            browserArgs: session.browserArgs,
+            windowSize: session.windowSize,
+            startedAt: session.startedAt
         };
     }
 

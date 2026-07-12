@@ -3,7 +3,8 @@ import { Key } from "selenium-webdriver";
 import * as z from "zod/v4";
 import { driverManager } from "../driver/driverManager.js";
 import { errorResult, textResult, toErrorMessage } from "../utils/toolResult.js";
-import { selectorLabel, selectorSchema, timeoutMsSchema } from "./shared/selector.js";
+import { timeoutMsSchema } from "./shared/selector.js";
+import { resolveSelectorFromTarget, selectorOrRefInputSchema } from "./shared/targetSelector.js";
 import { waitForVisibleElement } from "./shared/waits.js";
 
 export function registerTypeTool(server: McpServer): void {
@@ -12,19 +13,25 @@ export function registerTypeTool(server: McpServer): void {
         {
             description: "Type text into an element after waiting for visibility.",
             inputSchema: {
-                selector: selectorSchema,
+                selector: selectorOrRefInputSchema.shape.selector,
+                ref: selectorOrRefInputSchema.shape.ref,
                 text: z.string(),
                 clearFirst: z.boolean().default(true),
                 submit: z.boolean().default(false),
                 timeoutMs: timeoutMsSchema
             }
         },
-        async ({ selector, text, clearFirst, submit, timeoutMs }) => {
-            const label = selectorLabel(selector);
+        async ({ selector, ref, text, clearFirst, submit, timeoutMs }) => {
+            let label = "unknown";
+            let resolvedSelector = selector;
 
             try {
+                const target = await resolveSelectorFromTarget({ selector, ref });
+                resolvedSelector = target.selector;
+                label = target.label;
+
                 const driver = driverManager.getOrThrow();
-                const element = await waitForVisibleElement(driver, selector, timeoutMs);
+                const element = await waitForVisibleElement(driver, resolvedSelector, timeoutMs);
 
                 if (clearFirst) {
                     await element.clear();
@@ -37,7 +44,8 @@ export function registerTypeTool(server: McpServer): void {
                 }
 
                 return textResult(`Typed text into element ${label}.`, {
-                    selector,
+                    selector: resolvedSelector,
+                    ref,
                     timeoutMs,
                     clearFirst,
                     submit,
@@ -45,7 +53,8 @@ export function registerTypeTool(server: McpServer): void {
                 });
             } catch (err) {
                 return errorResult(`Failed to type into element ${label}: ${toErrorMessage(err)}`, {
-                    selector,
+                    selector: resolvedSelector,
+                    ref,
                     timeoutMs,
                     clearFirst,
                     submit

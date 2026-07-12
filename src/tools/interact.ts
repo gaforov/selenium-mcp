@@ -2,7 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import * as z from "zod/v4";
 import { driverManager } from "../driver/driverManager.js";
 import { errorResult, textResult, toErrorMessage } from "../utils/toolResult.js";
-import { selectorLabel, selectorSchema, timeoutMsSchema } from "./shared/selector.js";
+import { timeoutMsSchema } from "./shared/selector.js";
+import { resolveSelectorFromTarget, selectorOrRefInputSchema } from "./shared/targetSelector.js";
 import { waitForClickableElement, waitForVisibleElement } from "./shared/waits.js";
 
 export function registerInteractTool(server: McpServer): void {
@@ -12,19 +13,25 @@ export function registerInteractTool(server: McpServer): void {
             description: "Perform a mouse action on an element.",
             inputSchema: {
                 action: z.enum(["click", "double_click", "right_click", "hover"]),
-                selector: selectorSchema,
+                selector: selectorOrRefInputSchema.shape.selector,
+                ref: selectorOrRefInputSchema.shape.ref,
                 timeoutMs: timeoutMsSchema
             }
         },
-        async ({ action, selector, timeoutMs }) => {
-            const label = selectorLabel(selector);
+        async ({ action, selector, ref, timeoutMs }) => {
+            let label = "unknown";
+            let resolvedSelector = selector;
 
             try {
+                const target = await resolveSelectorFromTarget({ selector, ref });
+                resolvedSelector = target.selector;
+                label = target.label;
+
                 const driver = driverManager.getOrThrow();
                 const element =
                     action === "hover"
-                        ? await waitForVisibleElement(driver, selector, timeoutMs)
-                        : await waitForClickableElement(driver, selector, timeoutMs);
+                        ? await waitForVisibleElement(driver, resolvedSelector, timeoutMs)
+                        : await waitForClickableElement(driver, resolvedSelector, timeoutMs);
                 const actions = driver.actions({ async: true });
 
                 if (action === "click") {
@@ -39,13 +46,15 @@ export function registerInteractTool(server: McpServer): void {
 
                 return textResult(`Performed ${action} on element ${label}.`, {
                     action,
-                    selector,
+                    selector: resolvedSelector,
+                    ref,
                     timeoutMs
                 });
             } catch (err) {
                 return errorResult(`Failed to perform ${action} on element ${label}: ${toErrorMessage(err)}`, {
                     action,
-                    selector,
+                    selector: resolvedSelector,
+                    ref,
                     timeoutMs
                 });
             }

@@ -2,6 +2,31 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.2.0] - 2026-07-12
+
+### Added
+
+- Multi-session management tools: `session_create`, `session_select`, `session_list`, `session_destroy`.
+- `capture_page` — page snapshot with stable element refs that follow-up actions can target directly.
+- `batch_execute` — run constrained multi-step tool sequences in a single call.
+- Persistent selector hints per domain: `selector_hint_save`, `selector_hint_get`, `selector_hint_list`, `selector_hint_delete`.
+- Optional NDJSON tracing of all tool calls via `SELENIUM_MCP_TRACE` / `SELENIUM_MCP_TRACE_PATH`.
+- Shared target-selector resolution so interaction tools accept snapshot element refs as well as locators.
+- `CONTRIBUTING.md` and contribution guidance.
+
+### Changed
+
+- Interaction tools (`click`, `type`, `get_text`, `interact`) now resolve targets through the shared selector/ref layer.
+- README rewritten: one-click install links, per-client setup, categorized tool table, badges.
+- Package description and keywords expanded for discoverability; added `mcpName` for the MCP Registry.
+
+## [0.1.2] - 2026-05-01
+
+### Changed
+
+- Documentation updates for IntelliJ and client integration.
+- `take_screenshot` supports `savePath` for writing the image to disk.
+
 ## [0.1.1] - 2026-05-01
 
 ### Added

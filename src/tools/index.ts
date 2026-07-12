@@ -1,6 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerAlertTool } from "./alert.js";
 import { registerAssertionTools } from "./assertions.js";
+import { registerBatchExecuteTool } from "./batchExecute.js";
+import { registerCapturePageTool } from "./capturePage.js";
 import { registerClickTool } from "./click.js";
 import { registerCookieTools } from "./cookies.js";
 import { registerExecuteScriptTool } from "./executeScript.js";
@@ -15,6 +17,8 @@ import { registerNavigateTool } from "./navigate.js";
 import { registerOpenUrlTool } from "./openUrl.js";
 import { registerPressKeyTool } from "./pressKey.js";
 import { registerRetryClickTool } from "./retryClick.js";
+import { registerSessionTools } from "./session.js";
+import { registerSelectorHintTools } from "./selectorHints.js";
 import { registerStartBrowserTool } from "./startBrowser.js";
 import { registerStopBrowserTool } from "./stopBrowser.js";
 import { registerTakeScreenshotTool } from "./takeScreenshot.js";
@@ -40,12 +44,16 @@ export function registerCoreTools(server: McpServer): void {
     registerGetCurrentUrlTool(server);
     registerGetTitleTool(server);
     registerGetPageSourceTool(server);
+    registerCapturePageTool(server);
     registerExecuteScriptTool(server);
+    registerBatchExecuteTool(server);
     registerUploadFileTool(server);
     registerWindowTool(server);
     registerFrameTool(server);
     registerAlertTool(server);
     registerCookieTools(server);
+    registerSessionTools(server);
+    registerSelectorHintTools(server);
     registerStopBrowserTool(server);
 }
 
@@ -54,6 +62,8 @@ export const CORE_TOOL_NAMES = [
     "start_browser",
     "open_url",
     "navigate",
+    "find_element",
+    "wait_until_visible",
     "click",
     "interact",
     "type",
@@ -69,7 +79,9 @@ export const CORE_TOOL_NAMES = [
     "get_current_url",
     "get_title",
     "get_page_source",
+    "capture_page",
     "execute_script",
+    "batch_execute",
     "upload_file",
     "window",
     "frame",
@@ -77,5 +89,13 @@ export const CORE_TOOL_NAMES = [
     "add_cookie",
     "get_cookies",
     "delete_cookie",
+    "session_create",
+    "session_select",
+    "session_list",
+    "session_destroy",
+    "selector_hint_save",
+    "selector_hint_get",
+    "selector_hint_list",
+    "selector_hint_delete",
     "stop_browser"
 ];

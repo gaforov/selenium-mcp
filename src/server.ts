@@ -5,6 +5,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { driverManager } from "./driver/driverManager.js";
 import { registerCoreResources } from "./resources/index.js";
 import { registerCoreTools, CORE_TOOL_NAMES } from "./tools/index.js";
+import { installToolTracing } from "./utils/tracing.js";
 
 // CLI helpers: support --help and --list-tools for quick inspection when run via npx
 const args = process.argv.slice(2);
@@ -27,6 +28,7 @@ const server = new McpServer({
     version: "0.1.0"
 });
 
+installToolTracing(server);
 registerCoreTools(server);
 registerCoreResources(server);
 
@@ -40,7 +42,7 @@ async function shutdown(signal: string): Promise<void> {
     shuttingDown = true;
     console.error(`[selenium-mcp] ${signal} received, shutting down.`);
 
-    await Promise.allSettled([driverManager.stop(), server.close()]);
+    await Promise.allSettled([driverManager.stopAll(), server.close()]);
 }
 
 async function main(): Promise<void> {

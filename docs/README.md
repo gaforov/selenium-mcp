@@ -34,7 +34,9 @@ Implemented tools:
 - get_current_url
 - get_title
 - get_page_source
+- capture_page
 - execute_script
+- batch_execute
 - upload_file
 - window
 - frame
@@ -42,6 +44,14 @@ Implemented tools:
 - add_cookie
 - get_cookies
 - delete_cookie
+- session_create
+- session_select
+- session_list
+- session_destroy
+- selector_hint_save
+- selector_hint_get
+- selector_hint_list
+- selector_hint_delete
 - stop_browser
 
 Implemented resources:
