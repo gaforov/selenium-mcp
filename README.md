@@ -91,6 +91,20 @@ The agent chains `start_browser` → `navigate` → `get_title` → `take_screen
 - Node.js 20+
 - Chrome, Firefox, or Edge installed (Selenium Manager provisions the matching driver automatically)
 
+## How it compares
+
+Most Selenium MCP servers wrap WebDriver's basic commands. This one adds the layer that makes agents *reliable*:
+
+| Capability | selenium-mcp | Typical Selenium MCP servers |
+|---|:---:|:---:|
+| Page snapshot with stable element refs (`capture_page`) | ✅ | rare |
+| Persistent per-domain selector memory (`selector_hint_*`) | ✅ | ❌ |
+| Parallel multi-session browsing | ✅ | rare |
+| Batched multi-step execution in one call | ✅ | ❌ |
+| Built-in test assertions | ✅ | some |
+| Tool-call tracing (NDJSON audit log) | ✅ | ❌ |
+| Strict input validation + structured errors | ✅ | varies |
+
 ## Why selenium-mcp
 
 - **Snapshot-first workflows** — `capture_page` returns a page snapshot with stable element refs the agent can act on directly, no brittle selector guessing
