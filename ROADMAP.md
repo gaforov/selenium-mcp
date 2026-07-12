@@ -19,6 +19,8 @@ Stretch goals:
 
 Also planned for this release:
 
+- [ ] Improve tool-definition quality (Glama scores each tool on this): expand every tool's `description` to explain behavior + when to use it, and add `.describe()` to **every** zod input parameter. Lowest-scoring tools today: `interact`, `window`, `assert_visible`. No parameter currently has a `.describe()` annotation.
+- [ ] Add `glama.json` to the repo root (Glama profile metadata; currently flagged missing)
 - [ ] Demo video at the top of the README (recorded against saucedemo.com, showcasing `capture_page` refs, selector hints, and `batch_execute`)
 
 ## Release checklist (every version)
