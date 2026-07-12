@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.gaforov/selenium-mcp",
+  "description": "Selenium MCP server for AI agents — 38 browser automation tools: navigation, clicks, typing, assertions, screenshots, multi-session, page snapshots with stable element refs, selector hints, and batched execution.",
+  "repository": {
+    "url": "https://github.com/gaforov/selenium-mcp",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "websiteUrl": "https://github.com/gaforov/selenium-mcp#readme",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@gaforov/selenium-mcp",
+      "version": "0.2.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
