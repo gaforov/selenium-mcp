@@ -13,7 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract changelog section for this version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v ver="$VERSION" '
+            /^## \[/ { printing = index($0, "[" ver "]") > 0; next }
+            printing { print }
+          ' CHANGELOG.md > release-body.md
+          if [ ! -s release-body.md ]; then
+            echo "No CHANGELOG section found for $VERSION; falling back to auto notes." >&2
+          fi
+
       - name: Create GitHub release from tag
         uses: softprops/action-gh-release@v2
         with:
+          body_path: release-body.md
           generate_release_notes: true
