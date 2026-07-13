@@ -2,11 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
-## [Unreleased]
+## [0.2.1] - 2026-07-12
 
 ### Fixed
 
 - Server now reports its real package version in the MCP handshake (was hardcoded to `0.1.0`). Added a `--version` / `-v` CLI flag. This makes stale/cached installs diagnosable, since the reported version now matches what is actually running.
+
+### Changed
+
+- Corrected the advertised tool count to 39 across the README and package metadata.
+- README: added a capability comparison table and a link to `ROADMAP.md`; documented both IntelliJ MCP entry points (native JetBrains plugin vs. the GitHub Copilot plugin, which use different config keys).
 
 ## [0.2.0] - 2026-07-12
 

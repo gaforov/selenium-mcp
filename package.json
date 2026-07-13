@@ -1,6 +1,6 @@
 {
   "name": "@gaforov/selenium-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Selenium MCP server for AI agents — 39 browser automation tools: navigation, clicks, typing, assertions, screenshots, multi-session, page snapshots with stable element refs, selector hints, and batched execution.",
   "mcpName": "io.github.gaforov/selenium-mcp",
   "main": "dist/server.js",

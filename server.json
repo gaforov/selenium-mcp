@@ -6,14 +6,14 @@
     "url": "https://github.com/gaforov/selenium-mcp",
     "source": "github"
   },
-  "version": "0.2.0",
+  "version": "0.2.1",
   "websiteUrl": "https://github.com/gaforov/selenium-mcp#readme",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@gaforov/selenium-mcp",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
