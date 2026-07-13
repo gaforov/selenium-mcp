@@ -1,123 +1,254 @@
 # Usage Guide — Prompts & Recipes
 
-A practical guide to getting the most out of selenium-mcp. You don't call tools by
-name — you tell your AI agent (Copilot, Claude, Cursor, …) what you want in plain
-language, and it picks the right tools. The prompts below are examples you can adapt.
+A practical guide to getting real work done with selenium-mcp (v0.2.1, 39 tools) in any
+MCP agent — Copilot, Claude, Cursor, Windsurf, Goose.
 
-For exact parameters, see the [Tool Reference](TOOL_REFERENCE.md). The examples here
+**You don't call tools by name.** You describe the goal in plain language and the agent
+picks the tools. Every example below is a prompt you can paste and adapt. The examples
 use public demo sites so you can try them immediately:
-[example.com](https://example.com) and [saucedemo.com](https://www.saucedemo.com)
-(a standard QA practice store).
 
----
+- [saucedemo.com](https://www.saucedemo.com) — a login + shopping-cart demo store
+- [the-internet.herokuapp.com](https://the-internet.herokuapp.com) — classic QA sandbox (iframes, dropdowns, dynamic loading)
+- [example.com](https://example.com) — a trivial static page
 
-## The core workflow: explore, then generate tests
+For exact parameters, see the [Tool Reference](TOOL_REFERENCE.md). For per-client setup,
+see [Client Integration](CLIENT_INTEGRATION.md).
 
-The biggest win for test automation is letting the agent *drive a real browser first*,
-then write the test from what actually worked — real selectors, real waits, real
-assertions — instead of guessing from HTML.
-
-> **Prompt:** "Using the selenium tools, log in to https://www.saucedemo.com as
-> `standard_user` / `secret_sauce`, add the first product to the cart, and confirm the
-> cart badge shows 1."
-
-> **Then:** "Now write that exact flow as a Java + Selenium + JUnit test, using the
-> selectors and waits you just used."
-
-Because the agent physically executed the flow, the generated test uses locators that
-are known to work. This is language-agnostic — ask for Python/pytest, TypeScript,
-C#/NUnit, or anything else. Your existing framework stays untouched; the server just
-drives a separate browser.
+> **Tip:** switch your client to **Agent mode** — MCP tools only run there. If you have
+> several MCP servers enabled, name this one: *"using the **selenium** tools, …"*.
 
 ---
 
 ## Key tools & when to use them
 
+These are worth calling out explicitly in your prompts — they unlock the workflows that
+make this server more than a thin WebDriver wrapper.
+
 ### `capture_page` — see the page structure
 
-Snapshots the page and returns interactive elements with **stable refs** (`e1`, `e2`, …)
-the agent can act on directly, instead of guessing CSS selectors.
+Snapshots the page and returns interactive elements with **stable refs** (`e1`, `e2`, …),
+so the agent can act on what's actually there instead of guessing CSS selectors.
 
-- **When:** you want the agent to identify elements, build page objects, or debug a
+- **When:** you want the agent to identify elements, build a page object, or debug a
   locator that isn't matching.
 
-> **Prompt:** "Open https://www.saucedemo.com, capture the page, and list the input
-> fields and buttons you can see."
+```
+"Open https://www.saucedemo.com, capture the page, and show me the inputs and buttons."
+"Capture this page so we can build a page object."
+"What's actually visible on this page right now?"
+```
 
-**What happens:** the agent returns a structured list (`e1: input#user-name`,
-`e2: input#password`, `e3: input#login-button`) and can then act on those refs.
+**What happens:** the agent returns a structured list and acts on the refs:
+
+```
+e1: input#user-name      — text input, visible
+e2: input#password       — password input, visible
+e3: input#login-button   — "Login", visible, enabled
+```
+
+It then uses those refs for follow-up actions, or hands you exact `By` locators for your
+page objects.
 
 ### `selector_hint_*` — remember what works
 
-Persist working selectors per domain so repeat runs get faster and more reliable. No
-other Selenium MCP server has this.
+Persist working selectors per domain so repeat runs get faster and more reliable. **No
+other Selenium MCP server has this.**
 
-- **When:** you automate the same site repeatedly and don't want the agent
-  re-discovering the same locators every time.
+- **When:** you automate the same site repeatedly and don't want the agent re-discovering
+  the same locators every time.
 
-> **Prompt:** "Save the login button selector for saucedemo.com as a hint named
-> `login_btn`, then next time just reuse it."
+```
+"Save the login button selector for saucedemo.com as a hint named 'login_btn'."
+"What selector hints do we have saved for saucedemo.com?"
+"Reuse the saved login hints for this site."
+```
 
-**What happens:** `selector_hint_save` stores it; later `selector_hint_get` retrieves it,
-skipping re-discovery.
+**What happens:** `selector_hint_save` stores it; later `selector_hint_get` /
+`selector_hint_list` retrieve it, skipping rediscovery. `selector_hint_delete` clears one.
 
 ### `batch_execute` — multi-step in one shot
 
-Chains several actions (navigate, click, type, wait, assert) in a single call. Cuts
-round-trips — and, on metered assistants, credits.
+Chains **up to 10 actions** (navigate, click, type, wait, execute_script, …) in a single
+call. Cuts round-trips — and, on metered assistants, credits.
 
 - **When:** a known, linear flow such as login, form fill, or a navigation sequence.
 
-> **Prompt:** "In one batch: go to saucedemo.com, type `standard_user` into the username
-> field, type `secret_sauce` into the password, click login, and assert the page URL
-> contains `inventory`."
+```
+"In one batch: go to saucedemo.com, type 'standard_user' into the username field,
+ 'secret_sauce' into the password, click login, and wait for the inventory list."
+```
 
-**What happens:** the agent sends the whole sequence as one `batch_execute` call.
+**What happens:** the agent sends the whole sequence as one `batch_execute` call instead
+of a chat round-trip per step. Set stop-on-error to halt the batch on the first failure.
 
 ### `session_*` — multiple browsers at once
 
-Create, select, list, and destroy independent browser sessions, each with its own
+Create, select, list, and destroy **independent** browser sessions, each with its own
 cookies and login state.
 
 - **When:** testing multi-user interactions (chat, permissions, hand-offs) or comparing
   two states side by side.
 
-> **Prompt:** "Open two sessions: log in as `standard_user` in session 1 and
-> `problem_user` in session 2, then compare what each sees on the inventory page."
+```
+"Open two sessions: log in as 'standard_user' in session 1 and 'problem_user' in
+ session 2, then compare what each sees on the inventory page."
+```
 
-**What happens:** `session_create` opens a second browser; `session_select` switches
-which one your commands control.
+**What happens:** `session_create` opens another browser; `session_select` switches which
+one your commands drive; `session_list` shows them; `session_destroy` closes one.
 
-### `assert_text` / `assert_visible` / `assert_attribute` — turn it into a test
+### `assert_text` / `assert_visible` / `assert_attribute` — verify state
 
-Pass/fail checks that make the server usable as a real test runner, not just a driver.
+Built-in assertions that pass or fail with clear messages — this is what makes the server
+usable as a real test runner, not just a driver.
 
-> **Prompt:** "Assert that the page title contains `Swag Labs` and that the cart badge is
-> visible after adding an item."
+- **When:** verifying expected state during exploration, or writing acceptance criteria.
 
-### `wait_for_element` — reliable timing
+```
+"Assert the page title contains 'Swag Labs'."
+"Assert the cart badge is visible after adding an item."
+"Assert the error message equals 'Epic sadface: Username is required'."
+```
 
-Waits for an element to exist (optionally to be visible) before acting — the right way to
+**Match modes:** `equals`, `contains`, `matches` (regex).
+
+### `wait_for_element` / `wait_until_visible` — reliable timing
+
+Wait for an element to exist (optionally to be visible) before acting — the right way to
 handle slow or dynamically loaded pages.
 
-> **Prompt:** "Wait for the inventory list to load before counting the products."
+- **When:** content loads asynchronously (spinners, lazy lists, SPA transitions).
+
+```
+"Wait for the inventory list to load before counting the products."
+"Go to the-internet.herokuapp.com/dynamic_loading/1, start it, and wait until the
+ 'Hello World!' text is visible."
+```
+
+### `retry_click` — handle flaky elements
+
+Retries a click when elements go stale or get intercepted by overlays/animations.
+
+- **When:** a normal click fails due to timing — spinners, loading overlays, transitions.
+
+```
+"Click the save button — it might be behind a loading overlay, retry if it fails."
+```
+
+**Config:** up to **10 attempts** with a configurable delay between them (default 250 ms).
+
+### `window` — tabs & windows
+
+List, switch, open, or close browser tabs and windows.
+
+- **When:** the app opens links in new tabs, or you're testing multi-tab workflows.
+
+```
+"A new tab opened — switch to it."
+"List all open tabs."
+"Close this tab and go back to the first one."
+```
+
+### `frame` — iframe switching
+
+Switch focus into or out of iframes (common in embedded widgets, rich-text editors,
+payment fields, modals).
+
+- **When:** elements are inside an iframe and normal selectors can't find them.
+
+```
+"Go to the-internet.herokuapp.com/iframe and type into the rich-text editor inside the frame."
+"Switch back to the main page content."
+```
 
 ---
 
-## Debugging a flaky test live
+## Tools that just work (you rarely name these)
 
-> **Prompt:** "Our test says the checkout button isn't clickable. Go to the cart page on
-> saucedemo.com, capture the page, and tell me the button's state and attributes."
+For everyday actions, just describe what you want — the agent reaches for the right tool
+automatically.
 
-The agent reproduces the issue in a real browser and reports what it sees
-(displayed, enabled, overlapped) — far faster than reading a stack trace.
+| Tool | The agent uses it when you say… |
+|---|---|
+| `start_browser` / `stop_browser` | "Open Chrome…", "Close the browser" |
+| `open_url` / `navigate` | "Go to…" |
+| `click` / `type` / `press_key` | "Click…", "Type…", "Press Enter" |
+| `get_text` / `get_attribute` | "What does it say?", "Is it disabled?" |
+| `get_title` / `get_current_url` | "What page am I on?" |
+| `get_page_source` | "Show me the HTML" |
+| `find_element` | "Find the search box and describe it" |
+| `interact` | "Hover over…", "Right-click…", "Double-click…" |
+| `upload_file` | "Upload this file to the file input" |
+| `alert` | "Accept the alert", "Dismiss the popup", "Read the dialog text" |
+| `add_cookie` / `get_cookies` / `delete_cookie` | "Set this cookie", "Clear cookies" |
+| `take_screenshot` | "Take a screenshot" |
+
+---
+
+## Workflows
+
+### Explore, then generate a test (the SDET core loop)
+
+The biggest win: let the agent drive a real browser first, then write the test from what
+actually worked — real selectors, real waits, real assertions — instead of guessing.
+
+```
+1. "Log in to https://www.saucedemo.com as standard_user / secret_sauce, add the first
+    product to the cart, and confirm the cart badge shows 1."
+
+2. "Now write that exact flow as a Java + Selenium + JUnit test, using the selectors and
+    waits you just used."
+```
+
+Because the agent physically executed the flow, the generated test uses locators known to
+work. It's language-agnostic — ask for Python/pytest, TypeScript, or C#/NUnit instead.
+Your existing framework stays untouched; the server drives a separate browser.
+
+### Building a page object
+
+```
+1. Navigate to the page.
+2. capture_page  → the agent sees all elements with their selectors.
+3. The agent drafts the page class with exact By locators.
+4. You review and apply.
+```
+
+```
+"Go to the saucedemo.com login page, capture it, and draft a LoginPage.java page object
+ with the username field, password field, and login button."
+```
+
+### Exploratory testing via chat
+
+```
+"Start a browser and go to https://www.saucedemo.com.
+ Log in as standard_user / secret_sauce.
+ Sort products by price, low to high.
+ Add the cheapest item to the cart.
+ Take a screenshot and confirm the cart shows 1 item."
+```
+
+Each line becomes one or more tool calls. You stay in control; the agent executes.
+
+### Debugging a failing test
+
+```
+"Start a browser in headed mode.
+ Go to the page where our LoginTest fails.
+ Capture the page and show me what's there.
+ Is the login button enabled or disabled? Check its attributes.
+ What does any error message say?"
+```
+
+The agent reproduces the issue live and reports what it sees — far faster than reading a
+stack trace.
 
 ---
 
 ## Tips
 
-- Name the server if you have several MCP tools enabled: "using the **selenium** tools, …".
-- Switch your client to **Agent mode** — MCP tools only run there.
-- Ask the agent to `take_screenshot` when you want visual confirmation of a step.
-- For a full parameter reference, see [TOOL_REFERENCE.md](TOOL_REFERENCE.md); for setup
-  per client, see [CLIENT_INTEGRATION.md](CLIENT_INTEGRATION.md).
+- Ask for a `take_screenshot` whenever you want visual confirmation of a step.
+- Enable [tracing](../README.md#optional-tracing) (`SELENIUM_MCP_TRACE=true`) to get an
+  NDJSON log of every tool call for debugging or auditing.
+- Save selector hints for sites you automate often — the second run is faster and steadier.
+- For a full parameter reference, see [TOOL_REFERENCE.md](TOOL_REFERENCE.md).
