@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- Server now reports its real package version in the MCP handshake (was hardcoded to `0.1.0`). Added a `--version` / `-v` CLI flag. This makes stale/cached installs diagnosable, since the reported version now matches what is actually running.
+
 ## [0.2.0] - 2026-07-12
 
 ### Added
