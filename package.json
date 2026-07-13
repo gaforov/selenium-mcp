@@ -17,7 +17,8 @@
     "docs/CLIENT_INTEGRATION.md",
     "docs/DEVELOPMENT.md",
     "docs/README.md",
-    "docs/TOOL_REFERENCE.md"
+    "docs/TOOL_REFERENCE.md",
+    "docs/USAGE_GUIDE.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && node -e \"require('node:fs').chmodSync('dist/server.js', 0o755)\"",
