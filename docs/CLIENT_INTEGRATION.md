@@ -2,6 +2,16 @@
 
 This server runs locally over MCP stdio. Your AI client starts the Node process, then calls Selenium tools through MCP. Your app under test can be Java, TestNG, JUnit, JavaScript, Python, or anything else; the MCP server is separate from your test project.
 
+> **Both human- and AI-readable.** Each section below is self-contained with the exact
+> command, config-file location, and config key for that client. If you're not sure how
+> to wire this up, paste this repo's URL — `https://github.com/gaforov/selenium-mcp` — or
+> this file into your AI assistant and ask it to "configure this MCP server for my IDE and
+> OS." The npm package is `@gaforov/selenium-mcp`; run it with `npx -y @gaforov/selenium-mcp@latest`.
+
+> **Agent mode is required for GitHub Copilot.** In both VS Code and JetBrains, Copilot
+> only calls MCP tools in **Agent mode** — switch the chat mode dropdown to *Agent*, then
+> enable the server in the tools picker (see the Copilot sections below).
+
 ## Build From Source
 
 ```bash
@@ -60,32 +70,28 @@ If you drive Copilot Chat instead, this is a Copilot feature and uses **Copilot'
 }
 ```
 
-Then switch Copilot Chat to **Agent mode** for the tools to be callable.
+Then **enable it in Copilot Chat**: switch the chat mode dropdown to **Agent**, open the
+tools picker (the **Tools** / wrench icon), tick **selenium**, and click **Start** if it
+shows as stopped. The 39 tools then become callable.
 
 Either way, your Java/TestNG or Java/JUnit project stays unchanged. The assistant uses MCP tools to control a real browser while you keep writing tests in IntelliJ.
 
-## VS Code
+## VS Code (GitHub Copilot)
 
-Use a local MCP server entry like this:
+GitHub Copilot's Agent mode supports MCP. It's two steps: add the server, then enable it.
 
-```json
-{
-  "servers": {
-    "selenium-mcp": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["/absolute/path/to/selenium-mcp/dist/server.js"]
-    }
-  }
-}
+**1. Add the server.** The quickest way is the CLI:
+
+```bash
+code --add-mcp '{"name":"selenium","command":"npx","args":["-y","@gaforov/selenium-mcp@latest"]}'
 ```
 
-For npm:
+Or create `.vscode/mcp.json` in your workspace (Copilot uses the `servers` key with `"type": "stdio"`):
 
 ```json
 {
   "servers": {
-    "selenium-mcp": {
+    "selenium": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@gaforov/selenium-mcp@latest"]
@@ -93,6 +99,12 @@ For npm:
   }
 }
 ```
+
+For a local checkout, use `"command": "node"` with `"args": ["/absolute/path/to/selenium-mcp/dist/server.js"]`.
+
+**2. Enable it in Copilot Chat.** Open the Copilot Chat panel, switch the mode dropdown to
+**Agent**, click the **Tools** (wrench) icon, and tick **selenium**. If the server shows as
+stopped, click **Start**. The 39 tools now appear in the picker and Copilot can call them.
 
 ## Cursor
 

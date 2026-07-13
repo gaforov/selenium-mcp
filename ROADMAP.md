@@ -22,6 +22,15 @@ Stretch goals:
 - [ ] `drag_and_drop` — sliders, kanban boards, drop zones
 - [ ] `get_console_logs` — surface JS console errors to the agent
 - [ ] Element-level screenshot (capture one element instead of the viewport)
+- [ ] `resize_window` — resize the browser at runtime (currently only settable at `start_browser`)
+- [ ] Extend waits with URL-contains / title-contains conditions
+
+> **Note on tool count:** these are deliberately scoped to genuinely useful *primitives*.
+> Larger servers reach 70+ tools by bundling opinionated subsystems (test recording,
+> code generation, self-healing, risk analysis, Selenium Grid orchestration). This project
+> favors clean composable primitives and lets the AI agent orchestrate higher-level
+> workflows (see [USAGE_GUIDE.md](docs/USAGE_GUIDE.md)), rather than baking those workflows
+> into fixed tools.
 
 Also planned for this release:
 
