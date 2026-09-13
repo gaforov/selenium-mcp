@@ -137,16 +137,19 @@ Retries a click when elements go stale or get intercepted by overlays/animations
 
 **Config:** up to **10 attempts** with a configurable delay between them (default 250 ms).
 
-### `window` — tabs & windows
+### `window` — tabs, windows & viewport size
 
-List, switch, open, or close browser tabs and windows.
+List, switch, open, or close browser tabs and windows, or resize the viewport to test
+responsive layouts.
 
-- **When:** the app opens links in new tabs, or you're testing multi-tab workflows.
+- **When:** the app opens links in new tabs, you're testing multi-tab workflows, or you need
+  to check a mobile or tablet layout.
 
 ```
 "A new tab opened — switch to it."
 "List all open tabs."
 "Close this tab and go back to the first one."
+"Resize to a phone (390x844) and check that the hamburger menu appears."
 ```
 
 ### `frame` — iframe switching

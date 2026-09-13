@@ -22,7 +22,7 @@ Stretch goals:
 - [ ] `drag_and_drop` — sliders, kanban boards, drop zones
 - [ ] `get_console_logs` — surface JS console errors to the agent
 - [ ] Element-level screenshot (capture one element instead of the viewport)
-- [ ] `resize_window` — resize the browser at runtime (currently only settable at `start_browser`)
+- [x] `resize_window` — shipped as `window` actions `resize` (exact viewport size, for responsive testing) and `maximize`; no new tool
 - [ ] Extend waits with URL-contains / title-contains conditions
 
 > **Note on tool count:** these are deliberately scoped to genuinely useful *primitives*.

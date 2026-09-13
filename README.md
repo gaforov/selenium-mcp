@@ -126,7 +126,7 @@ Most Selenium MCP servers wrap WebDriver's basic commands. This one adds the lay
 | Assertions | `assert_text`, `assert_visible`, `assert_attribute` |
 | Scripting | `execute_script`, `batch_execute` |
 | Selector hints | `selector_hint_save`, `selector_hint_get`, `selector_hint_list`, `selector_hint_delete` |
-| Windows & context | `window`, `frame`, `alert` |
+| Windows & context | `window` (tabs, windows, resize/maximize), `frame`, `alert` |
 | Cookies | `add_cookie`, `get_cookies`, `delete_cookie` |
 | Capture | `take_screenshot` |
 

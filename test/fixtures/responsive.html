@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fixture: Responsive</title>
+    <style>
+        #mobile-menu { display: none; }
+
+        @media (max-width: 600px) {
+            #mobile-menu { display: block; }
+            #desktop-nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Fixture responsive</h1>
+    <nav id="desktop-nav">Desktop navigation</nav>
+    <button id="mobile-menu" type="button">Menu</button>
+</body>
+</html>

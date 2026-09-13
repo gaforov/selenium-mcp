@@ -144,7 +144,7 @@ Batch step example:
 
 ## Browser Context
 
-- `window`: `list`, `switch`, `switch_latest`, `new_tab`, `new_window`, `close`
+- `window`: `list`, `switch`, `switch_latest`, `new_tab`, `new_window`, `close`, `resize` (sets the viewport to `width` x `height`, e.g. 390 x 844 for a phone), `maximize`
 - `frame`: `switch`, `parent`, `default`
 - `alert`: `get_text`, `accept`, `dismiss`, `send_text`
 - `add_cookie`: add one cookie

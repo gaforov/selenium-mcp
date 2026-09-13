@@ -182,6 +182,15 @@ class DriverManager {
         return this.status();
     }
 
+    // Keeps browser-status accurate after a runtime resize/maximize of the active session.
+    recordWindowSize(windowSize: { width: number; height: number }): void {
+        const active = this.getActiveSession();
+
+        if (active) {
+            active.windowSize = windowSize;
+        }
+    }
+
     status(): BrowserStatus {
         const active = this.getActiveSession();
 

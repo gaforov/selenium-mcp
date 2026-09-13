@@ -18,6 +18,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
+- `window` gains `resize` and `maximize` actions. `resize` sets the viewport (the page area CSS media queries see) to an exact width and height, for responsive and mobile testing without restarting the browser. Every `window` parameter now has a description.
 - Dependencies upgraded: TypeScript 7, selenium-webdriver 4.49, MCP SDK 1.30, zod 4.6 (`npm audit` clean).
 
 ## [0.2.1] - 2026-07-12
