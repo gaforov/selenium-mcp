@@ -15,6 +15,8 @@ All notable changes to this project are documented in this file.
 - `history` — browser history navigation with `action: "back" | "forward" | "refresh"`. Returns the new URL and title, and says when there was no earlier or later page to go to.
 - `scroll` — scroll an element into view, jump to the top or bottom, or scroll by pixels, on the page or inside a scrollable container. Returns the position with `atTop`/`atBottom` flags, so agents can drive lazy-loaded and infinite-scroll pages.
 - `wait_for_page` — wait until the URL contains text, matches a regular expression, and/or the title contains text, for example after a login redirect or a single-page-app route change. On timeout, the error shows the URL and title the page actually had. Also available as a `batch_execute` step.
+- `AGENTS.md` — a contributor guide for AI coding assistants: file map, tool conventions, the questions to answer before adding a tool, the add-a-tool checklist, and the testing approach. `CONTRIBUTING.md` and `docs/DEVELOPMENT.md` now point to it.
+- `glama.json` for the Glama MCP directory listing.
 - End-to-end test suite (`npm run test:e2e`) that drives the real server over MCP stdio against headless Chrome, and runs in CI.
 
 ### Changed

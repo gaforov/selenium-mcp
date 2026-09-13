@@ -4,7 +4,7 @@
 
 - Node.js 20+
 - npm
-- Chrome, Firefox, or Edge installed
+- Chrome, Firefox, or Edge installed (the end-to-end tests use Chrome)
 
 ## Setup
 
@@ -17,7 +17,8 @@ npm install
 ```bash
 npm run typecheck
 npm run build
-npm test
+npm test            # unit tests, no browser needed
+npm run test:e2e    # end-to-end tests in headless Chrome
 npm run dev
 npm run start
 ```
@@ -25,7 +26,7 @@ npm run start
 ## Coding conventions
 
 - Keep one concern per tool file in src/tools
-- Use zod input schemas on every tool
+- Use zod input schemas on every tool, with a description on the tool and on every parameter
 - Reuse shared contracts in src/tools/shared when possible
 - Keep server bootstrap logic in src/server.ts only
 - Return MCP-compatible content responses with isError on failure
@@ -34,12 +35,8 @@ npm run start
 
 ## Adding a new tool
 
-1. Create src/tools/<toolName>.ts
-2. Define input schema with zod
-3. Implement handler with try/catch and structured error responses
-4. Register tool in src/tools/index.ts
-5. Update docs/TOOL_REFERENCE.md
-6. Add or update tests when shared contracts change
+Follow the checklist in [AGENTS.md](../AGENTS.md): it covers when a new tool is justified,
+registration, descriptions, the end-to-end test, and every doc to update.
 
 ## Documentation workflow
 
@@ -54,7 +51,7 @@ When behavior changes:
 
 - typecheck passes
 - build passes
-- tests pass
+- unit and end-to-end tests pass
 - npm pack --dry-run includes dist/server.js and public docs only
 - server starts in stdio mode
 - tool contracts documented

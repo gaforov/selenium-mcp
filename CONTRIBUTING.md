@@ -22,16 +22,16 @@ Requirements: Node.js 20+ and Chrome, Firefox, or Edge installed.
    ```bash
    npm run typecheck
    npm test
+   npm run test:e2e   # end-to-end tests in headless Chrome
    ```
 4. Open a pull request against `main` with a short description of what changed and why.
 
 ## Adding a new tool
 
-- Create `src/tools/<toolName>.ts` following the pattern of an existing tool (e.g. `src/tools/click.ts`).
-- Validate inputs with zod and return structured results via the shared result helpers.
-- Register it in `src/tools/index.ts` and add its name to `CORE_TOOL_NAMES`.
-- Document it in `docs/TOOL_REFERENCE.md`.
-- Add or extend a test in `test/`.
+Read [AGENTS.md](AGENTS.md) first. It has the questions to answer before adding a tool, the full
+checklist (registration, descriptions for the tool and every parameter, an end-to-end test, and
+the docs to update), and the conventions every tool follows. It is written for AI coding
+assistants, and works just as well for people.
 
 ## Reporting bugs
 
