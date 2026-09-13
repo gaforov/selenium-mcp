@@ -1,6 +1,6 @@
 # Usage Guide — Prompts & Recipes
 
-A practical guide to getting real work done with selenium-mcp (v0.2.1, 39 tools) in any
+A practical guide to getting real work done with selenium-mcp in any
 MCP agent — Copilot, Claude, Cursor, Windsurf, Goose.
 
 **You don't call tools by name.** You describe the goal in plain language and the agent

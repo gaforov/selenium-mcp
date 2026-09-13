@@ -72,7 +72,7 @@ If you drive Copilot Chat instead, this is a Copilot feature and uses **Copilot'
 
 Then **enable it in Copilot Chat**: switch the chat mode dropdown to **Agent**, open the
 tools picker (the **Tools** / wrench icon), tick **selenium**, and click **Start** if it
-shows as stopped. The 39 tools then become callable.
+shows as stopped. The tools then become callable.
 
 Either way, your Java/TestNG or Java/JUnit project stays unchanged. The assistant uses MCP tools to control a real browser while you keep writing tests in IntelliJ.
 
@@ -104,7 +104,7 @@ For a local checkout, use `"command": "node"` with `"args": ["/absolute/path/to/
 
 **2. Enable it in Copilot Chat.** Open the Copilot Chat panel, switch the mode dropdown to
 **Agent**, click the **Tools** (wrench) icon, and tick **selenium**. If the server shows as
-stopped, click **Start**. The 39 tools now appear in the picker and Copilot can call them.
+stopped, click **Start**. The tools now appear in the picker and Copilot can call them.
 
 ## Cursor
 

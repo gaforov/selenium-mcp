@@ -1,4 +1,5 @@
-import type { WebDriver } from "selenium-webdriver";
+import { error, type WebDriver } from "selenium-webdriver";
+import { toErrorMessage } from "../../utils/toolResult.js";
 
 export type PageConditions = {
     urlContains?: string | undefined;
@@ -12,6 +13,13 @@ export type PageWaitResult = {
     elapsedMs: number;
     waitedFor: string;
 };
+
+// Errors that waiting longer cannot fix. They end the wait at once, with what to do next.
+const PERMANENT_ERRORS: Array<[new (...args: never[]) => Error, string]> = [
+    [error.NoSuchWindowError, "The current window or tab was closed; use the window tool (list, then switch) to continue in another one."],
+    [error.NoSuchSessionError, "The browser session has ended; start a new one with start_browser."],
+    [error.UnexpectedAlertOpenError, "A dialog (alert, confirm, or prompt) is open; handle it with the alert tool first."]
+];
 
 function describeConditions({ urlContains, urlMatches, titleContains }: PageConditions): string {
     const parts: string[] = [];
@@ -54,12 +62,20 @@ export async function waitForPage(
     const waitedFor = describeConditions(conditions);
     const started = Date.now();
     let last = { url: "", title: "" };
+    let lastError: string | null = null;
 
     const conditionsMet = async (): Promise<boolean> => {
         try {
             last = { url: await driver.getCurrentUrl(), title: await driver.getTitle() };
-        } catch {
-            // The page can be mid-navigation; treat that as "not yet" and poll again.
+            lastError = null;
+        } catch (err) {
+            const permanent = PERMANENT_ERRORS.find(([type]) => err instanceof type);
+            if (permanent) {
+                throw new Error(`${permanent[1]} (${toErrorMessage(err)})`);
+            }
+
+            // Anything else may be a page mid-navigation: poll again, but keep it for the timeout message.
+            lastError = toErrorMessage(err);
             return false;
         }
 
@@ -73,10 +89,11 @@ export async function waitForPage(
     try {
         await driver.wait(conditionsMet, timeoutMs);
     } catch (err) {
-        if (err instanceof Error && err.name === "TimeoutError") {
-            throw new Error(
-                `Timed out after ${timeoutMs}ms waiting for ${waitedFor}. The page had URL ${last.url} and title "${last.title}".`
-            );
+        if (err instanceof error.TimeoutError) {
+            const seen = lastError
+                ? `The last check failed with: ${lastError}`
+                : `The page had URL ${last.url} and title "${last.title}".`;
+            throw new Error(`Timed out after ${timeoutMs}ms waiting for ${waitedFor}. ${seen}`);
         }
 
         throw err;

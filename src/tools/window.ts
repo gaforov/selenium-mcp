@@ -3,11 +3,7 @@ import type { WebDriver } from "selenium-webdriver";
 import * as z from "zod/v4";
 import { driverManager } from "../driver/driverManager.js";
 import { errorResult, textResult, toErrorMessage } from "../utils/toolResult.js";
-
-type Size = {
-    width: number;
-    height: number;
-};
+import { describeResize, sameSize, shouldEmulate, type Size } from "./shared/viewport.js";
 
 type Sizes = {
     window: Size;
@@ -23,10 +19,6 @@ function devTools(driver: WebDriver): DevToolsCapable | null {
     const candidate = driver as unknown as Partial<DevToolsCapable>;
 
     return typeof candidate.sendDevToolsCommand === "function" ? (candidate as DevToolsCapable) : null;
-}
-
-function sameSize(a: Size, b: Size): boolean {
-    return a.width === b.width && a.height === b.height;
 }
 
 async function readSizes(driver: WebDriver): Promise<Sizes> {
@@ -63,7 +55,7 @@ async function resizeViewport(driver: WebDriver, target: Size): Promise<Sizes & 
 
     // Chromium will not make a window narrower than about 500px, even headless. Device emulation
     // (what the DevTools device toolbar uses) sets the exact viewport instead.
-    if (!sameSize(sizes.viewport, target) && cdp) {
+    if (cdp && shouldEmulate(sizes.viewport, target)) {
         await cdp.sendDevToolsCommand("Emulation.setDeviceMetricsOverride", {
             width: target.width,
             height: target.height,
@@ -75,19 +67,6 @@ async function resizeViewport(driver: WebDriver, target: Size): Promise<Sizes & 
     }
 
     return { ...sizes, emulated: false };
-}
-
-function describeResize(target: Size, result: Sizes & { emulated: boolean }, canEmulate: boolean): string {
-    const { width, height } = result.viewport;
-
-    if (sameSize(result.viewport, target)) {
-        return result.emulated
-            ? `Resized viewport to ${width}x${height} using device emulation (the browser window cannot be made that small).`
-            : `Resized viewport to ${width}x${height}.`;
-    }
-
-    const hint = canEmulate ? "" : " Exact small sizes need Chrome or Edge, which support device emulation.";
-    return `Requested a ${target.width}x${target.height} viewport but got ${width}x${height}; the browser enforces a minimum window size.${hint}`;
 }
 
 export function registerWindowTool(server: McpServer): void {

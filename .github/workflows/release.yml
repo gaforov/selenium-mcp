@@ -67,8 +67,15 @@ jobs:
 
       - name: Publish to the MCP Registry
         run: |
-          ./mcp-publisher login github-oidc
-          ./mcp-publisher publish
+          name=$(node -p "require('./server.json').name")
+          version=$(node -p "require('./server.json').version")
+          encoded=$(node -p "encodeURIComponent(require('./server.json').name)")
+          if curl -sf -o /dev/null "https://registry.modelcontextprotocol.io/v0/servers/$encoded/versions/$version"; then
+            echo "$name $version is already in the MCP Registry; skipping, so this workflow is safe to re-run."
+          else
+            ./mcp-publisher login github-oidc
+            ./mcp-publisher publish
+          fi
 
       - name: Extract changelog section for this version
         run: |

@@ -56,4 +56,21 @@ describe("wait_for_page (e2e)", { timeout: 120_000 }, () => {
         });
         assert.equal(batch.data.results[1].details.title, "Fixture: Form");
     });
+
+    it("stops at once with the real cause when the window is gone", async () => {
+        await open();
+        await session.mcp.ok("window", { action: "new_tab" });
+        await session.mcp.ok("window", { action: "close" });
+
+        const started = Date.now();
+        const result = await session.mcp.call("wait_for_page", { urlContains: "/dashboard", timeoutMs: 8000 });
+        const elapsed = Date.now() - started;
+
+        assert.equal(result.isError, true);
+        assert.match(result.text, /window or tab was closed/);
+        assert.ok(elapsed < 4000, `should fail fast instead of waiting the full timeout (took ${elapsed}ms)`);
+
+        // Continue in the remaining tab so the session stays usable.
+        await session.mcp.ok("window", { action: "switch_latest" });
+    });
 });
