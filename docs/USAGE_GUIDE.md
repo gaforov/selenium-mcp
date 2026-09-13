@@ -173,6 +173,7 @@ automatically.
 | `start_browser` / `stop_browser` | "Open Chrome…", "Close the browser" |
 | `navigate` | "Go to…" |
 | `click` / `type` / `press_key` | "Click…", "Type…", "Press Enter" |
+| `select_option` | "Choose Canada from the country dropdown" |
 | `get_text` / `get_attribute` | "What does it say?", "Is it disabled?" |
 | `get_title` / `get_current_url` | "What page am I on?" |
 | `get_page_source` | "Show me the HTML" |

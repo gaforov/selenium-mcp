@@ -5,6 +5,7 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
+import { after, before } from "node:test";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -90,4 +91,24 @@ export async function startMcpClient() {
         stderr: () => stderr,
         close: () => client.close()
     };
+}
+
+// Call inside a describe() block: registers hooks that give the suite its own fixture server,
+// MCP server process, and headless browser. Read session.mcp / session.fixtures inside tests.
+export function useBrowserSession() {
+    const session = {};
+
+    before(async () => {
+        session.fixtures = await startFixtureServer();
+        session.mcp = await startMcpClient();
+        await session.mcp.ok("start_browser", { headless: true, windowSize: { width: 1280, height: 900 } });
+    });
+
+    after(async () => {
+        await session.mcp?.call("stop_browser").catch(() => {});
+        await session.mcp?.close();
+        await session.fixtures?.close();
+    });
+
+    return session;
 }

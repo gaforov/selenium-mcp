@@ -16,6 +16,7 @@ import { registerInteractTool } from "./interact.js";
 import { registerNavigateTool } from "./navigate.js";
 import { registerPressKeyTool } from "./pressKey.js";
 import { registerRetryClickTool } from "./retryClick.js";
+import { registerSelectOptionTool } from "./selectOption.js";
 import { registerSessionTools } from "./session.js";
 import { registerSelectorHintTools } from "./selectorHints.js";
 import { registerStartBrowserTool } from "./startBrowser.js";
@@ -32,6 +33,7 @@ export function registerCoreTools(server: McpServer): void {
     registerClickTool(server);
     registerInteractTool(server);
     registerTypeTool(server);
+    registerSelectOptionTool(server);
     registerGetTextTool(server);
     registerGetAttributeTool(server);
     registerAssertionTools(server);
@@ -63,6 +65,7 @@ export const CORE_TOOL_NAMES = [
     "click",
     "interact",
     "type",
+    "select_option",
     "get_text",
     "get_attribute",
     "assert_text",

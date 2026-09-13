@@ -63,12 +63,13 @@ Example:
 - `retry_click`: retry transient click failures
 - `interact`: `click`, `double_click`, `right_click`, or `hover`
 - `type`: clear/type text and optionally submit with Enter
+- `select_option`: choose an option in a native `<select>` by `text`, `value`, or zero-based `index`
 - `press_key`: press a key against the active element
 - `upload_file`: send an absolute file path to a file input
 
 Ref-aware targeting:
 
-- `click`, `interact`, `type`, and `get_text` accept either `selector` or `ref`
+- `click`, `interact`, `type`, `select_option`, and `get_text` accept either `selector` or `ref`
 - `ref` values come from `capture_page` results (`e1`, `e2`, ...)
 
 Type example:
@@ -82,6 +83,19 @@ Type example:
   "timeoutMs": 10000
 }
 ```
+
+Select example (provide exactly one of `text`, `value`, or `index`):
+
+```json
+{
+  "selector": { "by": "id", "value": "country" },
+  "text": "Canada"
+}
+```
+
+`select_option` returns the resulting selection as `selected: [{ index, text, value }]` plus `multiple`.
+On a multi-select it adds to the current selection. If no option matches, the error lists the
+available options. Custom dropdowns that are not a real `<select>` need `click` instead.
 
 ## Reading Data
 
@@ -99,6 +113,7 @@ Type example:
   - `wait_for_element`
   - `click`
   - `type`
+  - `select_option`
   - `execute_script`
 - `stopOnError` defaults to `true` to keep behavior predictable
 

@@ -22,6 +22,7 @@ Implemented tools:
 - retry_click
 - interact
 - type
+- select_option
 - get_text
 - get_attribute
 - assert_text

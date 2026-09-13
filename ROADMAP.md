@@ -6,7 +6,7 @@ Planned work for upcoming releases. Contributions toward any of these are welcom
 
 New tools (each follows the existing per-tool module pattern, e.g. `src/tools/click.ts`):
 
-- [ ] `select_option` — dropdown (`<select>`) handling via Selenium's Select API
+- [x] `select_option` — native `<select>` dropdowns by text, value, or index (also a `batch_execute` step)
 - [ ] `scroll` — scroll by offset or scroll an element into view (lazy-loaded content, long pages)
 - [ ] `back` / `forward` / `refresh` — browser history navigation
 - [x] ~~`clear_field`~~ — not needed: `type` already clears the field first by default (`clearFirst: true`; pass `false` to append)
