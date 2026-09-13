@@ -12,6 +12,7 @@ import { registerGetCurrentUrlTool } from "./getCurrentUrl.js";
 import { registerGetPageSourceTool } from "./getPageSource.js";
 import { registerGetTextTool } from "./getText.js";
 import { registerGetTitleTool } from "./getTitle.js";
+import { registerHistoryTool } from "./history.js";
 import { registerInteractTool } from "./interact.js";
 import { registerNavigateTool } from "./navigate.js";
 import { registerPressKeyTool } from "./pressKey.js";
@@ -30,6 +31,7 @@ import { registerWindowTool } from "./window.js";
 export function registerCoreTools(server: McpServer): void {
     registerStartBrowserTool(server);
     registerNavigateTool(server);
+    registerHistoryTool(server);
     registerClickTool(server);
     registerInteractTool(server);
     registerTypeTool(server);
@@ -61,6 +63,7 @@ export function registerCoreTools(server: McpServer): void {
 export const CORE_TOOL_NAMES = [
     "start_browser",
     "navigate",
+    "history",
     "find_element",
     "click",
     "interact",

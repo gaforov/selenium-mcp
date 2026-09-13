@@ -172,6 +172,7 @@ automatically.
 |---|---|
 | `start_browser` / `stop_browser` | "Open Chrome…", "Close the browser" |
 | `navigate` | "Go to…" |
+| `history` | "Go back", "Go forward", "Refresh the page" |
 | `click` / `type` / `press_key` | "Click…", "Type…", "Press Enter" |
 | `select_option` | "Choose Canada from the country dropdown" |
 | `get_text` / `get_attribute` | "What does it say?", "Is it disabled?" |

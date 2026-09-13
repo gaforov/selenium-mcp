@@ -16,6 +16,7 @@ Implemented tools:
 
 - start_browser
 - navigate
+- history
 - find_element
 - wait_for_element
 - click

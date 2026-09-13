@@ -12,6 +12,7 @@ All notable changes to this project are documented in this file.
 ### Added
 
 - `select_option` — pick an option in a native `<select>` dropdown by visible text, value, or zero-based index. Returns the resulting selection, lists the available options when nothing matches, supports multi-selects and `capture_page` refs, and is also available as a `batch_execute` step.
+- `history` — browser history navigation with `action: "back" | "forward" | "refresh"`. Returns the new URL and title, and says when there was no earlier or later page to go to.
 - End-to-end test suite (`npm run test:e2e`) that drives the real server over MCP stdio against headless Chrome, and runs in CI.
 
 ### Changed

@@ -8,7 +8,7 @@ New tools (each follows the existing per-tool module pattern, e.g. `src/tools/cl
 
 - [x] `select_option` — native `<select>` dropdowns by text, value, or index (also a `batch_execute` step)
 - [ ] `scroll` — scroll by offset or scroll an element into view (lazy-loaded content, long pages)
-- [ ] `back` / `forward` / `refresh` — browser history navigation
+- [x] `back` / `forward` / `refresh` — shipped as one `history` tool with an `action` parameter (matches `window`/`frame`/`alert`)
 - [x] ~~`clear_field`~~ — not needed: `type` already clears the field first by default (`clearFirst: true`; pass `false` to append)
 
 Consolidate duplicate tools (breaking change — cheap now at low adoption; note in CHANGELOG):

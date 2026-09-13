@@ -39,6 +39,7 @@ Stops the current browser session.
 ## Navigation And Page Info
 
 - `navigate`: navigate to a URL
+- `history`: `back`, `forward`, or `refresh`; returns the new URL, title, and whether the URL changed
 - `get_current_url`: return current URL
 - `get_title`: return page title
 - `get_page_source`: return page source with optional truncation

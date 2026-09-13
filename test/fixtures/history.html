@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Fixture: History</title>
+</head>
+<body>
+    <h1>Fixture history</h1>
+    <p id="loads"></p>
+    <a id="to-form" href="form.html">Go to the form</a>
+
+    <script>
+        // Counts real page loads in this tab, so tests can tell a reload actually happened.
+        const loads = Number(sessionStorage.getItem("history-loads") ?? 0) + 1;
+        sessionStorage.setItem("history-loads", String(loads));
+        document.getElementById("loads").textContent = `Loads: ${loads}`;
+    </script>
+</body>
+</html>
