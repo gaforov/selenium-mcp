@@ -5,8 +5,18 @@ import { selectorLabel, selectorSchema, type SelectorInput } from "./selector.js
 
 export const selectorOrRefInputSchema = z
     .object({
-        selector: selectorSchema.optional(),
-        ref: z.string().min(1).optional()
+        selector: selectorSchema
+            .optional()
+            .describe(
+                "How to find the element, e.g. { by: 'id', value: 'user-name' } or { by: 'css', value: '#login-button' }. Provide either selector or ref."
+            ),
+        ref: z
+            .string()
+            .min(1)
+            .optional()
+            .describe(
+                "Element ref from the latest capture_page result (e.g. 'e12'). Use instead of selector; refs go stale after navigation, so capture again if one is rejected."
+            )
     })
     .refine((value) => Boolean(value.selector || value.ref), {
         error: "Either selector or ref is required."

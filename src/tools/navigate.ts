@@ -7,9 +7,15 @@ export function registerNavigateTool(server: McpServer): void {
     server.registerTool(
         "navigate",
         {
-            description: "Navigate the active browser session to a URL.",
+            description:
+                "Open a URL in the current tab and wait for the page to load (up to the pageLoadTimeoutMs set in start_browser). " +
+                "Returns the final URL after any redirects, and the page title. " +
+                "Use history to go back, forward, or refresh; use wait_for_page when a later redirect or client-side route change still has to happen.",
             inputSchema: {
-                url: z.string().url()
+                url: z
+                    .string()
+                    .url()
+                    .describe("Absolute URL including the scheme, e.g. 'https://www.saucedemo.com'.")
             }
         },
         async ({ url }) => {

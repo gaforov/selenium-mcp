@@ -30,9 +30,15 @@ export function registerPressKeyTool(server: McpServer): void {
     server.registerTool(
         "press_key",
         {
-            description: "Press a keyboard key against the active element.",
+            description:
+                "Press one key on whichever element currently has focus, e.g. Enter to submit, Tab to move focus, Escape to close a dialog, or arrow keys in a list. " +
+                "Named keys: enter, tab, escape/esc, backspace, delete, space, arrowup, arrowdown, arrowleft, arrowright, home, end, pageup, pagedown; " +
+                "any other value is typed as literal text. To type into a specific field, use type, which focuses the field first.",
             inputSchema: {
-                key: z.string().min(1)
+                key: z
+                    .string()
+                    .min(1)
+                    .describe("Key name (case-insensitive), e.g. 'Enter', 'Tab', 'Escape', 'ArrowDown', or a single character.")
             }
         },
         async ({ key }) => {

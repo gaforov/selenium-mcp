@@ -9,11 +9,18 @@ export function registerWaitForElementTool(server: McpServer): void {
     server.registerTool(
         "wait_for_element",
         {
-            description: "Wait for an element to exist, with optional visibility requirement.",
+            description:
+                "Wait for an element to exist in the page, or with visible: true to also be displayed, then return its tag and state (displayed, enabled). " +
+                "Use it before acting on content that loads later: spinners finishing, lazy lists, dialogs, single-page-app transitions. " +
+                "click, type, and get_text already wait for their own target, so use this to wait for something else first. " +
+                "For URL or title changes, use wait_for_page.",
             inputSchema: {
                 selector: selectorSchema,
-                visible: z.boolean().default(false),
-                timeoutMs: timeoutMsSchema
+                visible: z
+                    .boolean()
+                    .default(false)
+                    .describe("Also require the element to be displayed, not just present in the DOM (default false)."),
+                timeoutMs: timeoutMsSchema.describe("How long to wait, in milliseconds (default 10000, max 60000).")
             }
         },
         async ({ selector, visible, timeoutMs }) => {
@@ -49,10 +56,15 @@ export function registerWaitForElementTool(server: McpServer): void {
     server.registerTool(
         "find_element",
         {
-            description: "Find an element and return basic metadata. Alias-friendly discovery tool.",
+            description:
+                "Look up one element and describe it: tag, visible text, and whether it is displayed and enabled. Waits for it to exist. " +
+                "Use it to confirm a selector matches the intended element, or to inspect an element before acting. " +
+                "To discover elements without knowing a selector, use capture_page; to wait for something to appear, use wait_for_element.",
             inputSchema: {
                 selector: selectorSchema,
-                timeoutMs: timeoutMsSchema
+                timeoutMs: timeoutMsSchema.describe(
+                    "How long to wait for the element to exist, in milliseconds (default 10000)."
+                )
             }
         },
         async ({ selector, timeoutMs }) => {

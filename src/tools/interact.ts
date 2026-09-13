@@ -10,12 +10,22 @@ export function registerInteractTool(server: McpServer): void {
     server.registerTool(
         "interact",
         {
-            description: "Perform a mouse action on an element.",
+            description:
+                "Mouse actions beyond a plain click: double_click, right_click (opens a context menu), hover (reveals menus and tooltips), " +
+                "or click performed as a real mouse move-and-click. " +
+                "Waits for the element to be visible (hover) or visible and enabled (clicks). Target it by selector or by a ref from capture_page. " +
+                "For an ordinary click, prefer click.",
             inputSchema: {
-                action: z.enum(["click", "double_click", "right_click", "hover"]),
+                action: z
+                    .enum(["click", "double_click", "right_click", "hover"])
+                    .describe(
+                        "double_click | right_click | hover | click. 'click' moves the mouse onto the element first, which helps with elements that only react to real pointer movement."
+                    ),
                 selector: selectorOrRefInputSchema.shape.selector,
                 ref: selectorOrRefInputSchema.shape.ref,
-                timeoutMs: timeoutMsSchema
+                timeoutMs: timeoutMsSchema.describe(
+                    "How long to wait for the element to become ready, in milliseconds (default 10000)."
+                )
             }
         },
         async ({ action, selector, ref, timeoutMs }) => {

@@ -18,10 +18,21 @@ export function registerExecuteScriptTool(server: McpServer): void {
     server.registerTool(
         "execute_script",
         {
-            description: "Execute synchronous JavaScript in the current page context.",
+            description:
+                "Run synchronous JavaScript in the current page and return its result (use a return statement); arguments are available as arguments[0], arguments[1], .... " +
+                "Useful for reading several values in one call, or page state no other tool exposes (localStorage, computed styles, element counts). " +
+                "The script runs with the page's privileges and can change the page; for user actions such as clicking and typing, prefer click and type so real events fire.",
             inputSchema: {
-                script: z.string().min(1),
-                args: z.array(jsonValueSchema).default([])
+                script: z
+                    .string()
+                    .min(1)
+                    .describe(
+                        "JavaScript function body, e.g. 'return document.querySelectorAll(\".inventory_item\").length;'. Return plain JSON values (strings, numbers, booleans, arrays, objects)."
+                    ),
+                args: z
+                    .array(jsonValueSchema)
+                    .default([])
+                    .describe("JSON values passed to the script as arguments[0], arguments[1], ... (default none).")
             }
         },
         async ({ script, args }) => {

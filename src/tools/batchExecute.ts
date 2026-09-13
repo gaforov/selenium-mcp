@@ -190,10 +190,22 @@ export function registerBatchExecuteTool(server: McpServer): void {
         "batch_execute",
         {
             description:
-                "Execute a constrained sequence of browser actions in one call. Supported actions: navigate, wait_for_element, wait_for_page, click, type, select_option, execute_script.",
+                "Run up to 10 steps in one call. Supported actions: navigate, wait_for_element, wait_for_page, click, type, select_option, and execute_script, " +
+                "each with the same fields as the standalone tool (selectors only, not capture_page refs). " +
+                "Use it for known linear flows such as a login or form fill, to save round trips. " +
+                "By default it stops at the first failing step; the result lists every executed step with its details or error.",
             inputSchema: {
-                steps: z.array(batchStepSchema).min(1).max(MAX_BATCH_STEPS),
-                stopOnError: z.boolean().default(true)
+                steps: z
+                    .array(batchStepSchema)
+                    .min(1)
+                    .max(MAX_BATCH_STEPS)
+                    .describe(
+                        "Ordered steps, 1-10. Each has an action plus that action's fields, e.g. { action: 'type', selector: { by: 'id', value: 'user-name' }, text: 'standard_user' }."
+                    ),
+                stopOnError: z
+                    .boolean()
+                    .default(true)
+                    .describe("Stop at the first failing step (default true). Set false to run every step and collect all errors.")
             }
         },
         async ({ steps, stopOnError }) => {

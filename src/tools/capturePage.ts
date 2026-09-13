@@ -16,7 +16,13 @@ type CapturedNode = {
 };
 
 const capturePageSchema = {
-    maxElements: z.number().int().min(10).max(500).default(200)
+    maxElements: z
+        .number()
+        .int()
+        .min(10)
+        .max(500)
+        .default(200)
+        .describe("Maximum elements to return, 10-500 (default 200). Lower it on very large pages to keep the result small.")
 };
 
 export function registerCapturePageTool(server: McpServer): void {
@@ -24,7 +30,10 @@ export function registerCapturePageTool(server: McpServer): void {
         "capture_page",
         {
             description:
-                "Capture page structure with stable refs (e1, e2, ...) and reusable selectors for follow-up actions.",
+                "Snapshot the page's visible interactive elements and headings (links, buttons, inputs, selects, textareas, ARIA roles, h1-h4) " +
+                "with stable refs e1, e2, ... and a reusable selector for each. Pass a ref to click, type, get_text, select_option, interact, or scroll " +
+                "instead of guessing a selector. Refs belong to this snapshot, so capture again after navigation or major page changes. " +
+                "Prefer this over screenshots or get_page_source to understand what is on the page.",
             inputSchema: capturePageSchema
         },
         async ({ maxElements }) => {

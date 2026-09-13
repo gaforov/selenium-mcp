@@ -23,13 +23,26 @@ export function registerAssertionTools(server: McpServer): void {
     server.registerTool(
         "assert_text",
         {
-            description: "Assert visible element text equals, contains, or matches a regular expression.",
+            description:
+                "Test step: check that an element's visible text equals, contains (default), or matches a regular expression. " +
+                "Waits for the element to be visible, then checks once (it does not wait for the text to change). " +
+                "Passes with the actual text, or fails as a tool error showing expected vs actual, so it works as an acceptance check. " +
+                "Use get_text to just read text without a pass/fail.",
             inputSchema: {
                 selector: selectorSchema,
-                expected: z.string(),
-                mode: matchModeSchema.default("contains"),
-                trim: z.boolean().default(true),
-                timeoutMs: timeoutMsSchema
+                expected: z
+                    .string()
+                    .describe("Text or pattern the element's text should match, e.g. 'Epic sadface: Username is required'."),
+                mode: matchModeSchema
+                    .default("contains")
+                    .describe("equals = exact match; contains = substring (default); matches = JavaScript regular expression."),
+                trim: z
+                    .boolean()
+                    .default(true)
+                    .describe("Trim whitespace from the actual text before comparing (default true)."),
+                timeoutMs: timeoutMsSchema.describe(
+                    "How long to wait for the element to become visible, in milliseconds (default 10000)."
+                )
             }
         },
         async ({ selector, expected, mode, trim, timeoutMs }) => {
@@ -76,10 +89,15 @@ export function registerAssertionTools(server: McpServer): void {
     server.registerTool(
         "assert_visible",
         {
-            description: "Assert an element becomes visible.",
+            description:
+                "Test step: check that an element becomes visible within timeoutMs, e.g. a success banner or a cart badge. " +
+                "Passes as soon as it is displayed; fails as a tool error if it is missing or stays hidden. " +
+                "Similar to wait_for_element with visible: true, but phrased as a pass/fail assertion.",
             inputSchema: {
                 selector: selectorSchema,
-                timeoutMs: timeoutMsSchema
+                timeoutMs: timeoutMsSchema.describe(
+                    "How long to wait for the element to become visible before failing, in milliseconds (default 10000)."
+                )
             }
         },
         async ({ selector, timeoutMs }) => {
@@ -107,13 +125,23 @@ export function registerAssertionTools(server: McpServer): void {
     server.registerTool(
         "assert_attribute",
         {
-            description: "Assert an element attribute/property equals, contains, or matches a regular expression.",
+            description:
+                "Test step: check that an element's attribute or property equals (default), contains, or matches a regular expression, " +
+                "e.g. that a button is disabled or an input's value is 'standard_user'. " +
+                "Waits for the element to exist; a missing attribute counts as an empty string. Fails as a tool error showing expected vs actual.",
             inputSchema: {
                 selector: selectorSchema,
-                name: z.string().min(1),
-                expected: z.string(),
-                mode: matchModeSchema.default("equals"),
-                timeoutMs: timeoutMsSchema
+                name: z
+                    .string()
+                    .min(1)
+                    .describe("Attribute or property to check, e.g. 'value', 'disabled', 'href', or 'class'."),
+                expected: z.string().describe("Expected value or pattern, e.g. 'true' for a disabled button."),
+                mode: matchModeSchema
+                    .default("equals")
+                    .describe("equals = exact match (default); contains = substring; matches = JavaScript regular expression."),
+                timeoutMs: timeoutMsSchema.describe(
+                    "How long to wait for the element to exist, in milliseconds (default 10000)."
+                )
             }
         },
         async ({ selector, name, expected, mode, timeoutMs }) => {
