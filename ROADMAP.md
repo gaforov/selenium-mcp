@@ -34,7 +34,7 @@ Stretch goals:
 
 Also planned for this release:
 
-- [ ] Improve tool-definition quality (Glama scores each tool on this): expand every tool's `description` to explain behavior + when to use it, and add `.describe()` to **every** zod input parameter. Lowest-scoring tools today: `interact`, `window`, `assert_visible`. No parameter currently has a `.describe()` annotation. Write descriptions that *steer* the agent between tools (e.g. "prefer X over screenshots for validation"), not just describe them.
+- [x] Improve tool-definition quality (Glama scores each tool on this): expand every tool's `description` to explain behavior + when to use it, and add `.describe()` to **every** zod input parameter. Lowest-scoring tools today: `interact`, `window`, `assert_visible`. No parameter currently has a `.describe()` annotation. Write descriptions that *steer* the agent between tools (e.g. "prefer X over screenshots for validation"), not just describe them.
 - [x] **End-to-end integration tests**: a reusable MCP test client (real MCP over stdio, no mocking), local HTML fixtures served over HTTP, tests grouped by feature, run headless in CI. Verify outcomes, not absence of errors. (`npm run test:e2e`)
 - [ ] **Automated npm publish**: GitHub Actions workflow that publishes on GitHub release using an npm granular automation token (`NPM_TOKEN` secret) — removes the interactive 2FA step from every release.
 - [ ] **AGENTS.md**: agent-facing contributor doc (file map, conventions, add-a-tool checklist, testing philosophy) so AI coding assistants can contribute correctly.

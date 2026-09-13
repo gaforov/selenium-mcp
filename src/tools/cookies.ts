@@ -4,21 +4,35 @@ import * as z from "zod/v4";
 import { driverManager } from "../driver/driverManager.js";
 import { errorResult, textResult, toErrorMessage } from "../utils/toolResult.js";
 
-const sameSiteSchema = z.enum(["Strict", "Lax", "None"]).optional();
+const sameSiteSchema = z
+    .enum(["Strict", "Lax", "None"])
+    .optional()
+    .describe("SameSite policy: Strict, Lax, or None (None also requires secure: true). Omit for the browser default.");
 
 export function registerCookieTools(server: McpServer): void {
     server.registerTool(
         "add_cookie",
         {
-            description: "Add a browser cookie for the current page domain.",
+            description:
+                "Set a cookie in the browser, e.g. a session or feature-flag cookie to skip a login screen or switch on a test mode. " +
+                "Browsers only accept cookies for the site that is currently open, so navigate to a page on that domain first. " +
+                "The page does not see the cookie until its next request, so refresh (history) or navigate afterwards. Setting an existing name replaces that cookie.",
             inputSchema: {
-                name: z.string().min(1),
-                value: z.string(),
-                path: z.string().optional(),
-                domain: z.string().optional(),
-                secure: z.boolean().optional(),
-                httpOnly: z.boolean().optional(),
-                expiry: z.number().int().positive().optional(),
+                name: z.string().min(1).describe("Cookie name, e.g. 'session_id'."),
+                value: z.string().describe("Cookie value."),
+                path: z.string().optional().describe("URL path the cookie applies to (default '/')."),
+                domain: z
+                    .string()
+                    .optional()
+                    .describe("Domain the cookie applies to, e.g. '.example.com' to include subdomains. Defaults to the current page's host."),
+                secure: z.boolean().optional().describe("Only send the cookie over HTTPS."),
+                httpOnly: z.boolean().optional().describe("Hide the cookie from page JavaScript (document.cookie)."),
+                expiry: z
+                    .number()
+                    .int()
+                    .positive()
+                    .optional()
+                    .describe("Expiry as a Unix timestamp in seconds. Omit for a session cookie that ends when the browser closes."),
                 sameSite: sameSiteSchema
             }
         },
@@ -74,9 +88,16 @@ export function registerCookieTools(server: McpServer): void {
     server.registerTool(
         "get_cookies",
         {
-            description: "Get all cookies or one cookie by name.",
+            description:
+                "Read the cookies the browser holds for the current page: all of them, or one by name. " +
+                "Includes httpOnly cookies that page JavaScript cannot see. Returns each cookie's name, value, domain, path, expiry, and flags. " +
+                "Useful to check that a login created a session cookie, or to copy one into another session with add_cookie.",
             inputSchema: {
-                name: z.string().min(1).optional()
+                name: z
+                    .string()
+                    .min(1)
+                    .optional()
+                    .describe("Name of one cookie to read, e.g. 'session_id'. Omit to read all cookies for the current page.")
             }
         },
         async ({ name }) => {
@@ -107,9 +128,16 @@ export function registerCookieTools(server: McpServer): void {
     server.registerTool(
         "delete_cookie",
         {
-            description: "Delete one cookie by name, or all cookies when name is omitted.",
+            description:
+                "Delete one cookie by name, or every cookie for the current page when name is omitted. " +
+                "Deleting all cookies usually logs the user out and resets consent banners and preferences; it cannot be undone. " +
+                "The page notices on its next request, so refresh (history) or navigate afterwards.",
             inputSchema: {
-                name: z.string().min(1).optional()
+                name: z
+                    .string()
+                    .min(1)
+                    .optional()
+                    .describe("Name of the cookie to delete, e.g. 'session_id'. Omit to delete ALL cookies for the current page.")
             }
         },
         async ({ name }) => {

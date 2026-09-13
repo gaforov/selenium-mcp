@@ -7,10 +7,19 @@ export function registerAlertTool(server: McpServer): void {
     server.registerTool(
         "alert",
         {
-            description: "Handle browser alert, confirm, or prompt dialogs.",
+            description:
+                "Handle a native browser dialog opened by alert(), confirm(), or prompt(). While one is open, other page actions fail until it is handled. " +
+                "get_text reads the message; accept clicks OK and dismiss clicks Cancel, which close the dialog and let the page act on the answer (this cannot be undone); " +
+                "send_text types into a prompt() before you accept it. Every action returns the dialog's text. Fails if no dialog is open. " +
+                "Custom in-page modals are not native dialogs: use click on their buttons instead.",
             inputSchema: {
-                action: z.enum(["get_text", "accept", "dismiss", "send_text"]),
-                text: z.string().optional()
+                action: z
+                    .enum(["get_text", "accept", "dismiss", "send_text"])
+                    .describe("get_text = read the message; accept = OK; dismiss = Cancel; send_text = type into a prompt() (then accept)."),
+                text: z
+                    .string()
+                    .optional()
+                    .describe("For send_text: the text to type into the prompt() field. Ignored for other actions.")
             }
         },
         async ({ action, text }) => {

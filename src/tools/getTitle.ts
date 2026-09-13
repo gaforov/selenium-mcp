@@ -6,7 +6,9 @@ export function registerGetTitleTool(server: McpServer): void {
     server.registerTool(
         "get_title",
         {
-            description: "Return the current page title."
+            description:
+                "Return the current page's title, the text shown in the browser tab. " +
+                "Use it to confirm which page is open; to wait until the title changes, use wait_for_page with titleContains."
         },
         async () => {
             try {

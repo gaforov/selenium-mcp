@@ -6,7 +6,10 @@ export function registerStopBrowserTool(server: McpServer): void {
     server.registerTool(
         "stop_browser",
         {
-            description: "Stop the active Selenium browser session if one exists."
+            description:
+                "Close the active browser session and quit its browser; its cookies, login state, and open pages are lost. " +
+                "With several sessions open, only the active one closes and another becomes active; use session_destroy to close a specific one. " +
+                "Safe to call when nothing is running. Call it when you are done, so no browser is left open."
         },
         async () => {
             try {

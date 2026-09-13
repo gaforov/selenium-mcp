@@ -5,6 +5,18 @@ import { errorResult, textResult, toErrorMessage } from "../utils/toolResult.js"
 import { selectorSchema } from "./shared/selector.js";
 import { deleteSelectorHint, getSelectorHint, listSelectorHints, saveSelectorHint } from "./shared/selectorHints.js";
 
+const keySchema = z
+    .string()
+    .min(1)
+    .max(128)
+    .describe("Short name for the element, e.g. 'login_button' or 'search_box' (1-128 chars).");
+
+const domainSchema = z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Site hostname, e.g. 'www.saucedemo.com'. Defaults to the hostname of the page currently open.");
+
 async function resolveDomain(domain?: string): Promise<string> {
     if (domain?.trim()) {
         return domain.trim().toLowerCase();
@@ -19,11 +31,14 @@ export function registerSelectorHintTools(server: McpServer): void {
     server.registerTool(
         "selector_hint_save",
         {
-            description: "Persist a named selector hint for a domain.",
+            description:
+                "Remember a selector that worked, under a short key for a site, so later runs can reuse it instead of rediscovering the element. " +
+                "Hints are saved to a JSON file on disk (.selenium-mcp/selector-hints.json in the server's working directory, or SELENIUM_MCP_SELECTOR_HINTS_PATH) and survive restarts. " +
+                "Save a hint after a selector has worked, e.g. after a successful click. Returns the saved hint.",
             inputSchema: {
-                key: z.string().min(1).max(128),
+                key: keySchema,
                 selector: selectorSchema,
-                domain: z.string().min(1).optional()
+                domain: domainSchema
             }
         },
         async ({ key, selector, domain }) => {
@@ -46,10 +61,12 @@ export function registerSelectorHintTools(server: McpServer): void {
     server.registerTool(
         "selector_hint_get",
         {
-            description: "Resolve a selector hint by key and domain.",
+            description:
+                "Look up a saved selector by key for a site and return it, ready to pass as the selector of click, type, get_text, and similar tools. " +
+                "Fails if no hint with that key exists for the domain; use selector_hint_list to see what is saved.",
             inputSchema: {
-                key: z.string().min(1).max(128),
-                domain: z.string().min(1).optional()
+                key: keySchema,
+                domain: domainSchema
             }
         },
         async ({ key, domain }) => {
@@ -78,9 +95,15 @@ export function registerSelectorHintTools(server: McpServer): void {
     server.registerTool(
         "selector_hint_list",
         {
-            description: "List selector hints, optionally filtered by domain.",
+            description:
+                "List saved selector hints (key, domain, and selector) for every site, or only for one domain. " +
+                "Check this at the start of a run on a familiar site to reuse known selectors. Does not need a browser to be running.",
             inputSchema: {
-                domain: z.string().min(1).optional()
+                domain: z
+                    .string()
+                    .min(1)
+                    .optional()
+                    .describe("Only list hints for this hostname, e.g. 'www.saucedemo.com'. Omit to list hints for every site.")
             }
         },
         async ({ domain }) => {
@@ -101,10 +124,12 @@ export function registerSelectorHintTools(server: McpServer): void {
     server.registerTool(
         "selector_hint_delete",
         {
-            description: "Delete a selector hint by key and domain.",
+            description:
+                "Permanently remove a saved selector hint from the hints file, e.g. when the site changed and the selector no longer works. " +
+                "This cannot be undone; save a corrected hint with selector_hint_save. Fails if no hint with that key exists for the domain.",
             inputSchema: {
-                key: z.string().min(1).max(128),
-                domain: z.string().min(1).optional()
+                key: keySchema,
+                domain: domainSchema
             }
         },
         async ({ key, domain }) => {

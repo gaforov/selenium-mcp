@@ -9,13 +9,31 @@ export function registerFrameTool(server: McpServer): void {
     server.registerTool(
         "frame",
         {
-            description: "Switch browser frame focus by index, name/id, selector, parent, or default content.",
+            description:
+                "Move into or out of an iframe. Elements inside an iframe (embedded widgets, rich-text editors, payment fields) cannot be found by other tools until you switch into it. " +
+                "switch = enter a frame by selector, index, or nameOrId; parent = go up one level; default = return to the main page. " +
+                "The switch lasts until you change it again or a new page loads, so switch back with default when you are done inside the frame.",
             inputSchema: {
-                action: z.enum(["switch", "parent", "default"]),
-                selector: selectorSchema.optional(),
-                index: z.number().int().min(0).optional(),
-                nameOrId: z.string().min(1).optional(),
-                timeoutMs: timeoutMsSchema
+                action: z
+                    .enum(["switch", "parent", "default"])
+                    .describe("switch = enter a frame (needs selector, index, or nameOrId); parent = up one level; default = back to the main page."),
+                selector: selectorSchema
+                    .optional()
+                    .describe("For switch: the <iframe> element, e.g. { by: 'css', value: 'iframe#editor' }. Most reliable way to pick a frame."),
+                index: z
+                    .number()
+                    .int()
+                    .min(0)
+                    .optional()
+                    .describe("For switch: zero-based position of the frame on the page. Used when no selector is given."),
+                nameOrId: z
+                    .string()
+                    .min(1)
+                    .optional()
+                    .describe("For switch: the frame's name or id attribute. Used when neither selector nor index is given."),
+                timeoutMs: timeoutMsSchema.describe(
+                    "How long to wait for the frame element when switching by selector, in milliseconds (default 10000)."
+                )
             }
         },
         async ({ action, selector, index, nameOrId, timeoutMs }) => {

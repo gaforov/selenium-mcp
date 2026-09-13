@@ -6,30 +6,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerCoreTools } from "../dist/tools/index.js";
 
 // Descriptions are what an AI reads to pick a tool and fill its parameters, so every tool must
-// explain itself and every parameter. Tools still waiting for their rewrite are listed here;
-// remove each name once it is done (the second test fails if a listed tool is already complete).
-const PENDING = new Set([
-    "get_current_url",
-    "get_title",
-    "get_page_source",
-    "take_screenshot",
-    "upload_file",
-    "frame",
-    "alert",
-    "add_cookie",
-    "get_cookies",
-    "delete_cookie",
-    "session_create",
-    "session_select",
-    "session_list",
-    "session_destroy",
-    "selector_hint_save",
-    "selector_hint_get",
-    "selector_hint_list",
-    "selector_hint_delete",
-    "stop_browser"
-]);
-
+// explain itself and every parameter. New tools cannot ship without them.
 const MIN_DESCRIPTION_LENGTH = 100;
 
 // Lists tools the way a client sees them, over an in-memory transport (no browser needed).
@@ -68,17 +45,8 @@ function gaps(tool) {
 describe("tool descriptions", () => {
     it("every tool explains itself and every parameter", async () => {
         const tools = await listTools();
-        const failures = tools
-            .filter((tool) => !PENDING.has(tool.name))
-            .flatMap((tool) => gaps(tool).map((problem) => `${tool.name}: ${problem}`));
+        const failures = tools.flatMap((tool) => gaps(tool).map((problem) => `${tool.name}: ${problem}`));
 
         assert.deepEqual(failures, []);
-    });
-
-    it("the pending list only holds tools that still need work", async () => {
-        const tools = await listTools();
-        const alreadyDone = tools.filter((tool) => PENDING.has(tool.name) && gaps(tool).length === 0).map((tool) => tool.name);
-
-        assert.deepEqual(alreadyDone, [], "remove these names from PENDING");
     });
 });

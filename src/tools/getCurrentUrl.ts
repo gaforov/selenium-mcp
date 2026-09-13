@@ -6,7 +6,9 @@ export function registerGetCurrentUrlTool(server: McpServer): void {
     server.registerTool(
         "get_current_url",
         {
-            description: "Return the current browser URL."
+            description:
+                "Return the URL of the current tab, including any query string and fragment. " +
+                "Use it to confirm where a click or redirect landed; to wait until the URL changes, use wait_for_page."
         },
         async () => {
             try {
