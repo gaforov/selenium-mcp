@@ -175,6 +175,7 @@ automatically.
 | `history` | "Go back", "Go forward", "Refresh the page" |
 | `click` / `type` / `press_key` | "Click…", "Type…", "Press Enter" |
 | `select_option` | "Choose Canada from the country dropdown" |
+| `scroll` | "Scroll down", "Scroll to the footer", "Keep scrolling until all products load" |
 | `get_text` / `get_attribute` | "What does it say?", "Is it disabled?" |
 | `get_title` / `get_current_url` | "What page am I on?" |
 | `get_page_source` | "Show me the HTML" |

@@ -24,6 +24,7 @@ Implemented tools:
 - interact
 - type
 - select_option
+- scroll
 - get_text
 - get_attribute
 - assert_text

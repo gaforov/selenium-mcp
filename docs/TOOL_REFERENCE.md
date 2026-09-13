@@ -65,12 +65,13 @@ Example:
 - `interact`: `click`, `double_click`, `right_click`, or `hover`
 - `type`: clear/type text and optionally submit with Enter
 - `select_option`: choose an option in a native `<select>` by `text`, `value`, or zero-based `index`
+- `scroll`: scroll an element into view, jump `to: "top" | "bottom"`, or scroll by `deltaX`/`deltaY` pixels; pass a container element with `to`/`deltaY` to scroll inside it. Returns the position plus `atTop`/`atBottom`
 - `press_key`: press a key against the active element
 - `upload_file`: send an absolute file path to a file input
 
 Ref-aware targeting:
 
-- `click`, `interact`, `type`, `select_option`, and `get_text` accept either `selector` or `ref`
+- `click`, `interact`, `type`, `select_option`, `scroll`, and `get_text` accept either `selector` or `ref`
 - `ref` values come from `capture_page` results (`e1`, `e2`, ...)
 
 Type example:
