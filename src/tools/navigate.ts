@@ -7,7 +7,7 @@ export function registerNavigateTool(server: McpServer): void {
     server.registerTool(
         "navigate",
         {
-            description: "Navigate the active browser session to a URL. Alias-friendly alternative to open_url.",
+            description: "Navigate the active browser session to a URL.",
             inputSchema: {
                 url: z.string().url()
             }

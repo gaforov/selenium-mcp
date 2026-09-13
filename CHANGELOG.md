@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.0] - Unreleased
+
+### Removed
+
+- **Breaking:** `open_url` — it was an exact duplicate of `navigate`. Use `navigate` instead (same input, same result).
+- **Breaking:** `wait_until_visible` — it was equivalent to `wait_for_element` with `visible: true`. Use `wait_for_element` with `visible: true` instead.
+
+### Added
+
+- End-to-end test suite (`npm run test:e2e`) that drives the real server over MCP stdio against headless Chrome, and runs in CI.
+
+### Changed
+
+- Dependencies upgraded: TypeScript 7, selenium-webdriver 4.49, MCP SDK 1.30, zod 4.6 (`npm audit` clean).
+
 ## [0.2.1] - 2026-07-12
 
 ### Fixed

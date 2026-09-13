@@ -11,9 +11,11 @@ describe("tool registry metadata", () => {
         assert.ok(CORE_TOOL_NAMES.includes("session_destroy"));
     });
 
-    it("includes wait and discovery aliases", () => {
+    it("includes discovery tools and drops the removed duplicates", () => {
         assert.ok(CORE_TOOL_NAMES.includes("find_element"));
-        assert.ok(CORE_TOOL_NAMES.includes("wait_until_visible"));
+        assert.ok(CORE_TOOL_NAMES.includes("wait_for_element"));
+        assert.ok(!CORE_TOOL_NAMES.includes("open_url"));
+        assert.ok(!CORE_TOOL_NAMES.includes("wait_until_visible"));
     });
 
     it("does not contain duplicate tool names", () => {

@@ -9,12 +9,12 @@ New tools (each follows the existing per-tool module pattern, e.g. `src/tools/cl
 - [ ] `select_option` — dropdown (`<select>`) handling via Selenium's Select API
 - [ ] `scroll` — scroll by offset or scroll an element into view (lazy-loaded content, long pages)
 - [ ] `back` / `forward` / `refresh` — browser history navigation
-- [ ] `clear_field` — clear an input before retyping
+- [x] ~~`clear_field`~~ — not needed: `type` already clears the field first by default (`clearFirst: true`; pass `false` to append)
 
 Consolidate duplicate tools (breaking change — cheap now at low adoption; note in CHANGELOG):
 
-- [ ] Remove `open_url` — byte-for-byte duplicate of `navigate` (both call `driver.get(url)`). Keep `navigate` (industry-standard name).
-- [ ] Remove `wait_until_visible` — equivalent to `wait_for_element` with `visible: true`. Keep `wait_for_element` (strictly more capable).
+- [x] Remove `open_url` — byte-for-byte duplicate of `navigate` (both call `driver.get(url)`). Keep `navigate` (industry-standard name).
+- [x] Remove `wait_until_visible` — equivalent to `wait_for_element` with `visible: true`. Keep `wait_for_element` (strictly more capable).
 - [ ] Keep `find_element` — borderline but returns element text/metadata that `wait_for_element` doesn't; sharpen its description to say how it differs.
 
 Stretch goals:
@@ -35,10 +35,10 @@ Stretch goals:
 Also planned for this release:
 
 - [ ] Improve tool-definition quality (Glama scores each tool on this): expand every tool's `description` to explain behavior + when to use it, and add `.describe()` to **every** zod input parameter. Lowest-scoring tools today: `interact`, `window`, `assert_visible`. No parameter currently has a `.describe()` annotation. Write descriptions that *steer* the agent between tools (e.g. "prefer X over screenshots for validation"), not just describe them.
-- [ ] **End-to-end integration tests**: a reusable MCP test client (JSON-RPC over stdio, no mocking), local HTML fixtures loaded via `file://`, tests grouped by feature, run headless in CI. Verify outcomes, not absence of errors.
+- [x] **End-to-end integration tests**: a reusable MCP test client (real MCP over stdio, no mocking), local HTML fixtures served over HTTP, tests grouped by feature, run headless in CI. Verify outcomes, not absence of errors. (`npm run test:e2e`)
 - [ ] **Automated npm publish**: GitHub Actions workflow that publishes on GitHub release using an npm granular automation token (`NPM_TOKEN` secret) — removes the interactive 2FA step from every release.
 - [ ] **AGENTS.md**: agent-facing contributor doc (file map, conventions, add-a-tool checklist, testing philosophy) so AI coding assistants can contribute correctly.
-- [ ] Reconsider `clear_field`: instead of a new tool, make `type` clear-the-field-first by default (with an `append` option) — one less tool, matches user expectation.
+- [x] Reconsider `clear_field`: already the case — `type` clears the field first by default, and `clearFirst: false` appends. No new tool needed.
 - [ ] Add `glama.json` to the repo root (Glama profile metadata; currently flagged missing)
 - [ ] Demo video at the top of the README (recorded against saucedemo.com, showcasing `capture_page` refs, selector hints, and `batch_execute`)
 

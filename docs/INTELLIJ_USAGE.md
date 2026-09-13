@@ -175,7 +175,7 @@ Steps:
 **The assistant will:**
 
 1. Call `start_browser` to launch Chrome
-2. Call `open_url` to navigate to the login page
+2. Call `navigate` to go to the login page
 3. Call `type` to fill the username field
 4. Call `type` to fill the password field
 5. Call `click` to submit the form
@@ -251,7 +251,7 @@ When done testing:
 ## Tips for Best Results
 
 1. **Keep selectors specific:** Use `id`, `name`, or `className` when available; avoid generic selectors
-2. **Wait for dynamic elements:** Use `wait_for_element` or `wait_until_visible` before interacting with async-loaded content
+2. **Wait for dynamic elements:** Use `wait_for_element` (with `visible: true` when it must be on screen) before interacting with async-loaded content
 3. **Use structured prompts:** Tell the assistant what page you're on, what elements exist, and what you expect
 4. **Screenshot on failure:** When debugging, ask for a screenshot to see current page state
 5. **Reuse browser session:** Start browser once at the beginning; use multiple interactions within one session

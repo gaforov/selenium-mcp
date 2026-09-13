@@ -15,11 +15,9 @@ This folder contains the authoritative documentation for selenium-mcp.
 Implemented tools:
 
 - start_browser
-- open_url
 - navigate
 - find_element
 - wait_for_element
-- wait_until_visible
 - click
 - retry_click
 - interact

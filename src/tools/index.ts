@@ -14,7 +14,6 @@ import { registerGetTextTool } from "./getText.js";
 import { registerGetTitleTool } from "./getTitle.js";
 import { registerInteractTool } from "./interact.js";
 import { registerNavigateTool } from "./navigate.js";
-import { registerOpenUrlTool } from "./openUrl.js";
 import { registerPressKeyTool } from "./pressKey.js";
 import { registerRetryClickTool } from "./retryClick.js";
 import { registerSessionTools } from "./session.js";
@@ -29,7 +28,6 @@ import { registerWindowTool } from "./window.js";
 
 export function registerCoreTools(server: McpServer): void {
     registerStartBrowserTool(server);
-    registerOpenUrlTool(server);
     registerNavigateTool(server);
     registerClickTool(server);
     registerInteractTool(server);
@@ -60,10 +58,8 @@ export function registerCoreTools(server: McpServer): void {
 // Exported list of core tool names for CLI listing and external inspection.
 export const CORE_TOOL_NAMES = [
     "start_browser",
-    "open_url",
     "navigate",
     "find_element",
-    "wait_until_visible",
     "click",
     "interact",
     "type",

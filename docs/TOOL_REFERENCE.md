@@ -38,8 +38,7 @@ Stops the current browser session.
 
 ## Navigation And Page Info
 
-- `open_url`: navigate to a URL
-- `navigate`: alias-friendly URL navigation
+- `navigate`: navigate to a URL
 - `get_current_url`: return current URL
 - `get_title`: return page title
 - `get_page_source`: return page source with optional truncation
@@ -47,8 +46,7 @@ Stops the current browser session.
 ## Element Discovery And Waits
 
 - `find_element`: locate an element and return metadata
-- `wait_for_element`: wait for existence, optionally visibility
-- `wait_until_visible`: wait for visibility
+- `wait_for_element`: wait for existence, or for visibility with `visible: true`
 
 Example:
 

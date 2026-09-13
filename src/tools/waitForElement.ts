@@ -47,40 +47,6 @@ export function registerWaitForElementTool(server: McpServer): void {
     );
 
     server.registerTool(
-        "wait_until_visible",
-        {
-            description: "Wait for an element to be visible.",
-            inputSchema: {
-                selector: selectorSchema,
-                timeoutMs: timeoutMsSchema
-            }
-        },
-        async ({ selector, timeoutMs }) => {
-            const label = selectorLabel(selector);
-
-            try {
-                const driver = driverManager.getOrThrow();
-                const element = await waitForVisibleElement(driver, selector, timeoutMs);
-                const enabled = await element.isEnabled();
-                const tagName = await element.getTagName();
-
-                return textResult(`Element is visible: ${label}.`, {
-                    selector,
-                    timeoutMs,
-                    displayed: true,
-                    enabled,
-                    tagName
-                });
-            } catch (err) {
-                return errorResult(`Element did not become visible ${label}: ${toErrorMessage(err)}`, {
-                    selector,
-                    timeoutMs
-                });
-            }
-        }
-    );
-
-    server.registerTool(
         "find_element",
         {
             description: "Find an element and return basic metadata. Alias-friendly discovery tool.",

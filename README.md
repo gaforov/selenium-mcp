@@ -119,8 +119,8 @@ Most Selenium MCP servers wrap WebDriver's basic commands. This one adds the lay
 | Category | Tools |
 |---|---|
 | Browser lifecycle | `start_browser`, `stop_browser`, `session_create`, `session_select`, `session_list`, `session_destroy` |
-| Navigation | `open_url`, `navigate`, `get_current_url`, `get_title` |
-| Element discovery | `find_element`, `wait_for_element`, `wait_until_visible`, `capture_page`, `get_page_source` |
+| Navigation | `navigate`, `get_current_url`, `get_title` |
+| Element discovery | `find_element`, `wait_for_element`, `capture_page`, `get_page_source` |
 | Interaction | `click`, `retry_click`, `interact` (hover/double/right-click), `type`, `press_key`, `upload_file` |
 | Reading | `get_text`, `get_attribute` |
 | Assertions | `assert_text`, `assert_visible`, `assert_attribute` |

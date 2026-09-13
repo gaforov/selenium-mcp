@@ -112,10 +112,10 @@ usable as a real test runner, not just a driver.
 
 **Match modes:** `equals`, `contains`, `matches` (regex).
 
-### `wait_for_element` / `wait_until_visible` — reliable timing
+### `wait_for_element` — reliable timing
 
-Wait for an element to exist (optionally to be visible) before acting — the right way to
-handle slow or dynamically loaded pages.
+Wait for an element to exist — or, with `visible: true`, to be visible — before acting. This
+is the right way to handle slow or dynamically loaded pages.
 
 - **When:** content loads asynchronously (spinners, lazy lists, SPA transitions).
 
@@ -171,7 +171,7 @@ automatically.
 | Tool | The agent uses it when you say… |
 |---|---|
 | `start_browser` / `stop_browser` | "Open Chrome…", "Close the browser" |
-| `open_url` / `navigate` | "Go to…" |
+| `navigate` | "Go to…" |
 | `click` / `type` / `press_key` | "Click…", "Type…", "Press Enter" |
 | `get_text` / `get_attribute` | "What does it say?", "Is it disabled?" |
 | `get_title` / `get_current_url` | "What page am I on?" |
