@@ -176,6 +176,7 @@ automatically.
 | `start_browser` / `stop_browser` | "Open Chrome…", "Close the browser" |
 | `navigate` | "Go to…" |
 | `history` | "Go back", "Go forward", "Refresh the page" |
+| `wait_for_page` | "Log in and wait until you're on the dashboard" |
 | `click` / `type` / `press_key` | "Click…", "Type…", "Press Enter" |
 | `select_option` | "Choose Canada from the country dropdown" |
 | `scroll` | "Scroll down", "Scroll to the footer", "Keep scrolling until all products load" |

@@ -23,7 +23,7 @@ Stretch goals:
 - [ ] `get_console_logs` — surface JS console errors to the agent
 - [ ] Element-level screenshot (capture one element instead of the viewport)
 - [x] `resize_window` — shipped as `window` actions `resize` (exact viewport size, for responsive testing) and `maximize`; no new tool
-- [ ] Extend waits with URL-contains / title-contains conditions
+- [x] Extend waits with URL-contains / title-contains conditions — shipped as `wait_for_page` (URL contains, URL regex, title contains; also a `batch_execute` step)
 
 > **Note on tool count:** these are deliberately scoped to genuinely useful *primitives*.
 > Larger servers reach 70+ tools by bundling opinionated subsystems (test recording,

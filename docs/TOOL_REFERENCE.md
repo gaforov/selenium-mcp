@@ -48,6 +48,7 @@ Stops the current browser session.
 
 - `find_element`: locate an element and return metadata
 - `wait_for_element`: wait for existence, or for visibility with `visible: true`
+- `wait_for_page`: wait until the URL contains text (`urlContains`), matches a regex (`urlMatches`), and/or the title contains text (`titleContains`); all given conditions must hold. On timeout, the error shows the actual URL and title
 
 Example:
 
@@ -113,6 +114,7 @@ available options. Custom dropdowns that are not a real `<select>` need `click` 
 - Supported step actions:
   - `navigate`
   - `wait_for_element`
+  - `wait_for_page`
   - `click`
   - `type`
   - `select_option`

@@ -19,6 +19,7 @@ Implemented tools:
 - history
 - find_element
 - wait_for_element
+- wait_for_page
 - click
 - retry_click
 - interact

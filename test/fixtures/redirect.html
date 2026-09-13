@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Fixture: Redirect</title>
+</head>
+<body>
+    <h1>Fixture redirect</h1>
+    <button id="login" type="button">Log in</button>
+    <button id="open-order" type="button">Open order</button>
+
+    <script>
+        // Like a login form: the server "thinks", then redirects to another page.
+        document.getElementById("login").addEventListener("click", () => {
+            setTimeout(() => {
+                location.href = "form.html?welcome=1";
+            }, 500);
+        });
+
+        // Like a single-page app: the URL and title change without a page load.
+        document.getElementById("open-order").addEventListener("click", () => {
+            setTimeout(() => {
+                history.pushState({}, "", "/app/orders/42");
+                document.title = "Order 42";
+            }, 400);
+        });
+    </script>
+</body>
+</html>

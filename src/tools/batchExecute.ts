@@ -3,6 +3,7 @@ import { Key } from "selenium-webdriver";
 import * as z from "zod/v4";
 import { driverManager } from "../driver/driverManager.js";
 import { errorResult, textResult, toErrorMessage } from "../utils/toolResult.js";
+import { waitForPage } from "./shared/pageWaits.js";
 import { selectorLabel, selectorSchema, timeoutMsSchema } from "./shared/selector.js";
 import { selectOption } from "./shared/selectOption.js";
 import { waitForClickableElement, waitForLocatedElement, waitForVisibleElement } from "./shared/waits.js";
@@ -29,6 +30,14 @@ const waitForElementStepSchema = z.object({
     action: z.literal("wait_for_element"),
     selector: selectorSchema,
     visible: z.boolean().default(false),
+    timeoutMs: timeoutMsSchema
+});
+
+const waitForPageStepSchema = z.object({
+    action: z.literal("wait_for_page"),
+    urlContains: z.string().min(1).optional(),
+    urlMatches: z.string().min(1).optional(),
+    titleContains: z.string().min(1).optional(),
     timeoutMs: timeoutMsSchema
 });
 
@@ -65,6 +74,7 @@ const executeScriptStepSchema = z.object({
 const batchStepSchema = z.discriminatedUnion("action", [
     navigateStepSchema,
     waitForElementStepSchema,
+    waitForPageStepSchema,
     clickStepSchema,
     typeStepSchema,
     selectOptionStepSchema,
@@ -108,6 +118,15 @@ async function runStep(step: BatchStep): Promise<Record<string, unknown>> {
                 displayed,
                 enabled,
                 tagName
+            };
+        }
+
+        case "wait_for_page": {
+            const result = await waitForPage(driver, step, step.timeoutMs);
+
+            return {
+                ...result,
+                timeoutMs: step.timeoutMs
             };
         }
 
@@ -171,7 +190,7 @@ export function registerBatchExecuteTool(server: McpServer): void {
         "batch_execute",
         {
             description:
-                "Execute a constrained sequence of browser actions in one call. Supported actions: navigate, wait_for_element, click, type, select_option, execute_script.",
+                "Execute a constrained sequence of browser actions in one call. Supported actions: navigate, wait_for_element, wait_for_page, click, type, select_option, execute_script.",
             inputSchema: {
                 steps: z.array(batchStepSchema).min(1).max(MAX_BATCH_STEPS),
                 stopOnError: z.boolean().default(true)

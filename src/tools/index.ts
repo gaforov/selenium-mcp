@@ -27,6 +27,7 @@ import { registerTakeScreenshotTool } from "./takeScreenshot.js";
 import { registerTypeTool } from "./typeText.js";
 import { registerUploadFileTool } from "./uploadFile.js";
 import { registerWaitForElementTool } from "./waitForElement.js";
+import { registerWaitForPageTool } from "./waitForPage.js";
 import { registerWindowTool } from "./window.js";
 
 export function registerCoreTools(server: McpServer): void {
@@ -42,6 +43,7 @@ export function registerCoreTools(server: McpServer): void {
     registerGetAttributeTool(server);
     registerAssertionTools(server);
     registerWaitForElementTool(server);
+    registerWaitForPageTool(server);
     registerRetryClickTool(server);
     registerPressKeyTool(server);
     registerTakeScreenshotTool(server);
@@ -78,6 +80,7 @@ export const CORE_TOOL_NAMES = [
     "assert_visible",
     "assert_attribute",
     "wait_for_element",
+    "wait_for_page",
     "retry_click",
     "press_key",
     "take_screenshot",
