@@ -16,6 +16,16 @@ Built with TypeScript, the official MCP SDK, and Selenium WebDriver — strict z
 [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_MCP_Server-0098FF?style=flat-square)](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522selenium-mcp%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522%2540gaforov%252Fselenium-mcp%2540latest%2522%255D%257D)
 [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_MCP_Server-24bfa5?style=flat-square)](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522selenium-mcp%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522%2540gaforov%252Fselenium-mcp%2540latest%2522%255D%257D)
 
+## What's new in 0.3.0
+
+- **New tools:** `select_option` for dropdowns, `scroll` (including infinite-scroll pages and scrollable panels), `history` for back, forward, and refresh, and `wait_for_page` to wait for a URL or title after a redirect.
+- **Responsive testing:** `window` can now resize the viewport to an exact size, such as a 390x844 phone, or maximize it.
+- **Better tool choice by AI agents:** every tool and parameter now explains what it does, what it returns, and when to use a similar tool instead.
+- **Breaking:** `open_url` and `wait_until_visible` were removed as duplicates. Use `navigate`, and `wait_for_element` with `visible: true`.
+- **Verified releases:** every release is tested end to end against a real browser and published with npm provenance.
+
+See the [changelog](CHANGELOG.md) for details.
+
 ## Setup
 
 <details open>
@@ -104,6 +114,8 @@ Most Selenium MCP servers wrap WebDriver's basic commands. This one adds the lay
 | Built-in test assertions | ✅ | some |
 | Tool-call tracing (NDJSON audit log) | ✅ | ❌ |
 | Strict input validation + structured errors | ✅ | varies |
+| Every tool and parameter described for AI agents (enforced by tests) | ✅ | varies |
+| End-to-end tests against a real browser in CI | ✅ | some |
 
 ## Why selenium-mcp
 

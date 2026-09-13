@@ -1,46 +1,34 @@
 # Roadmap
 
-Planned work for upcoming releases. Contributions toward any of these are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+Planned work for upcoming releases. Contributions toward any of these are welcome — see
+[CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). Shipped work is recorded in
+[CHANGELOG.md](CHANGELOG.md).
 
-## v0.3.0 (planned)
+## v0.3.1 (next)
 
-New tools (each follows the existing per-tool module pattern, e.g. `src/tools/click.ts`):
+- [ ] Demo video at the top of the README, recorded against saucedemo.com: `capture_page` refs,
+      a login through those refs, `selector_hint_save`, assertions, then a `batch_execute` re-run
+      to show the speed
+- [ ] Fixes from the first round of 0.3.0 feedback
+- [ ] Harden publishing: once trusted publishing has worked for a release, set the npm package's
+      publishing access to "require two-factor authentication and disallow tokens"
 
-- [x] `select_option` — native `<select>` dropdowns by text, value, or index (also a `batch_execute` step)
-- [x] `scroll` — element into view, top/bottom, or pixel offset, on the page or inside a scrollable container; `atBottom` flag for infinite scroll
-- [x] `back` / `forward` / `refresh` — shipped as one `history` tool with an `action` parameter (matches `window`/`frame`/`alert`)
-- [x] ~~`clear_field`~~ — not needed: `type` already clears the field first by default (`clearFirst: true`; pass `false` to append)
+## v0.4.0 (planned)
 
-Consolidate duplicate tools (breaking change — cheap now at low adoption; note in CHANGELOG):
-
-- [x] Remove `open_url` — byte-for-byte duplicate of `navigate` (both call `driver.get(url)`). Keep `navigate` (industry-standard name).
-- [x] Remove `wait_until_visible` — equivalent to `wait_for_element` with `visible: true`. Keep `wait_for_element` (strictly more capable).
-- [ ] Keep `find_element` — borderline but returns element text/metadata that `wait_for_element` doesn't; sharpen its description to say how it differs.
-
-Stretch goals:
-
+- [ ] Element screenshot: capture one element instead of the whole viewport, as a `selector`/`ref`
+      parameter on `take_screenshot` rather than a new tool
 - [ ] `drag_and_drop` — sliders, kanban boards, drop zones
-- [ ] `get_console_logs` — surface JS console errors to the agent
-- [ ] Element-level screenshot (capture one element instead of the viewport)
-- [x] `resize_window` — shipped as `window` actions `resize` (exact viewport size, for responsive testing) and `maximize`; no new tool
-- [x] Extend waits with URL-contains / title-contains conditions — shipped as `wait_for_page` (URL contains, URL regex, title contains; also a `batch_execute` step)
+- [ ] Console logs — surface the page's JavaScript errors to the agent, ideally captured
+      automatically through WebDriver BiDi
+- [ ] More `batch_execute` steps: `scroll` and `history`
 
-> **Note on tool count:** these are deliberately scoped to genuinely useful *primitives*.
-> Larger servers reach 70+ tools by bundling opinionated subsystems (test recording,
-> code generation, self-healing, risk analysis, Selenium Grid orchestration). This project
-> favors clean composable primitives and lets the AI agent orchestrate higher-level
-> workflows (see [USAGE_GUIDE.md](docs/USAGE_GUIDE.md)), rather than baking those workflows
-> into fixed tools.
+## Scope
 
-Also planned for this release:
-
-- [x] Improve tool-definition quality (Glama scores each tool on this): expand every tool's `description` to explain behavior + when to use it, and add `.describe()` to **every** zod input parameter. Lowest-scoring tools today: `interact`, `window`, `assert_visible`. No parameter currently has a `.describe()` annotation. Write descriptions that *steer* the agent between tools (e.g. "prefer X over screenshots for validation"), not just describe them.
-- [x] **End-to-end integration tests**: a reusable MCP test client (real MCP over stdio, no mocking), local HTML fixtures served over HTTP, tests grouped by feature, run headless in CI. Verify outcomes, not absence of errors. (`npm run test:e2e`)
-- [x] **Automated publishing**: pushing a `v*` tag runs the Release workflow, which publishes to npm with trusted publishing (no token to store, provenance included) and to the MCP Registry via GitHub OIDC, removing the interactive 2FA and `mcp-publisher` steps from every release.
-- [x] **AGENTS.md**: agent-facing contributor doc (file map, conventions, add-a-tool checklist, testing philosophy) so AI coding assistants can contribute correctly.
-- [x] Reconsider `clear_field`: already the case — `type` clears the field first by default, and `clearFirst: false` appends. No new tool needed.
-- [x] Add `glama.json` to the repo root (Glama profile metadata; currently flagged missing)
-- [ ] Demo video at the top of the README (recorded against saucedemo.com, showcasing `capture_page` refs, selector hints, and `batch_execute`)
+New tools are deliberately limited to genuinely useful *primitives*; see the questions in
+[AGENTS.md](AGENTS.md) before proposing one. Larger servers reach 70+ tools by bundling
+opinionated subsystems (test recording, code generation, self-healing, risk analysis, Selenium
+Grid orchestration). This project favors clean, composable primitives and lets the AI agent
+orchestrate higher-level workflows (see [USAGE_GUIDE.md](docs/USAGE_GUIDE.md)).
 
 ## Release checklist (every version)
 
@@ -51,13 +39,16 @@ Also planned for this release:
 5. Optional local check: `node scripts/check-release.mjs vX.Y.Z`
 6. Push `main` and the `vX.Y.Z` tag. The Release workflow runs every test, publishes to npm (trusted publishing, with provenance) and to the MCP Registry (GitHub OIDC), then creates the GitHub Release
 7. Update the GitHub "About" description and mcp.so listing if the tool count changed
+8. Move shipped items out of this file and make sure the next version's plan is written down
 
-If the workflow fails after npm has published, fix the cause and re-run it: the npm step skips a
-version that is already published. Manual fallback: `npm publish --access public` in your own
-terminal, then `mcp-publisher login github` and `mcp-publisher publish`.
+If the workflow fails after npm has published, fix the cause and re-run it: the npm and MCP
+Registry steps skip a version that is already published. Manual fallback: `npm publish --access
+public` in your own terminal, then `mcp-publisher login github` and `mcp-publisher publish`.
 
 ## Ideas / backlog
 
-- BiDi-based capabilities (network inspection, console capture without polling)
-- Selenium Grid support for remote/parallel execution
-- Per-tool docs examples in `docs/TOOL_REFERENCE.md`
+- Network inspection through WebDriver BiDi
+- Selenium Grid support for remote and parallel execution
+- Safari support
+- A Dockerfile and `smithery.yaml` for more MCP directory listings
+- Per-tool examples in `docs/TOOL_REFERENCE.md`
