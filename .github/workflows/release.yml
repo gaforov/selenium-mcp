@@ -1,20 +1,74 @@
 name: Release
 
+# Pushing a version tag (e.g. v0.3.0) runs every check, then publishes to npm (trusted
+# publishing: no token, provenance included), publishes to the MCP Registry (GitHub OIDC),
+# and creates the GitHub Release from the matching CHANGELOG section.
 on:
   push:
     tags:
       - "v*"
 
 permissions:
-  contents: write
+  contents: write # create the GitHub Release
+  id-token: write # OIDC for npm trusted publishing and the MCP Registry login
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
-  publish-release:
+  release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Use an npm that supports trusted publishing (11.5.1+)
+        run: |
+          npm install -g npm@latest
+          npm --version
+
+      - name: Check the tag matches the versions and changelog
+        run: node scripts/check-release.mjs "$GITHUB_REF_NAME"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: End-to-end tests (headless Chrome)
+        run: npm run test:e2e
+
+      - name: Publish to npm
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already on npm; skipping, so this workflow is safe to re-run."
+          else
+            npm publish --access public
+          fi
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Publish to the MCP Registry
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
 
       - name: Extract changelog section for this version
         run: |
@@ -23,9 +77,6 @@ jobs:
             /^## \[/ { printing = index($0, "[" ver "]") > 0; next }
             printing { print }
           ' CHANGELOG.md > release-body.md
-          if [ ! -s release-body.md ]; then
-            echo "No CHANGELOG section found for $VERSION; falling back to auto notes." >&2
-          fi
 
       - name: Create GitHub release from tag
         uses: softprops/action-gh-release@v2

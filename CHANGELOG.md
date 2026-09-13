@@ -23,6 +23,7 @@ All notable changes to this project are documented in this file.
 
 - Rewrote tool descriptions to explain what each tool does, what it waits for and returns, and when to use it instead of a similar tool; every parameter now has a description with valid values, defaults, and examples. This helps AI clients pick the right tool and fill its parameters correctly. A test now fails if any tool or parameter is left undescribed.
 - `window` gains `resize` and `maximize` actions. `resize` sets the viewport (the page area CSS media queries see) to an exact width and height, for responsive and mobile testing without restarting the browser. Every `window` parameter now has a description.
+- Releases are now published from GitHub Actions with npm provenance, so the npm page links each version to the exact commit and build it came from.
 - Dependencies upgraded: TypeScript 7, selenium-webdriver 4.49, MCP SDK 1.30, zod 4.6 (`npm audit` clean).
 
 ## [0.2.1] - 2026-07-12

@@ -36,7 +36,7 @@ Also planned for this release:
 
 - [x] Improve tool-definition quality (Glama scores each tool on this): expand every tool's `description` to explain behavior + when to use it, and add `.describe()` to **every** zod input parameter. Lowest-scoring tools today: `interact`, `window`, `assert_visible`. No parameter currently has a `.describe()` annotation. Write descriptions that *steer* the agent between tools (e.g. "prefer X over screenshots for validation"), not just describe them.
 - [x] **End-to-end integration tests**: a reusable MCP test client (real MCP over stdio, no mocking), local HTML fixtures served over HTTP, tests grouped by feature, run headless in CI. Verify outcomes, not absence of errors. (`npm run test:e2e`)
-- [ ] **Automated npm publish**: GitHub Actions workflow that publishes on GitHub release using an npm granular automation token (`NPM_TOKEN` secret) — removes the interactive 2FA step from every release.
+- [x] **Automated publishing**: pushing a `v*` tag runs the Release workflow, which publishes to npm with trusted publishing (no token to store, provenance included) and to the MCP Registry via GitHub OIDC, removing the interactive 2FA and `mcp-publisher` steps from every release.
 - [x] **AGENTS.md**: agent-facing contributor doc (file map, conventions, add-a-tool checklist, testing philosophy) so AI coding assistants can contribute correctly.
 - [x] Reconsider `clear_field`: already the case — `type` clears the field first by default, and `clearFirst: false` appends. No new tool needed.
 - [x] Add `glama.json` to the repo root (Glama profile metadata; currently flagged missing)
@@ -44,13 +44,17 @@ Also planned for this release:
 
 ## Release checklist (every version)
 
-1. Add a `## [x.y.z] - date` section to `CHANGELOG.md` (the release workflow uses it as the GitHub Release body)
+1. Date the `## [x.y.z]` section in `CHANGELOG.md` (replace "Unreleased"). The Release workflow refuses to publish without it and uses the section as the GitHub Release body
 2. Bump the version in `package.json` and in **both** version fields of `server.json`
 3. Update the tool count in `README.md` (intro + "Tools (N)" heading), `package.json` description, and `server.json` description
-4. `npm publish --access public` (interactive terminal — 2FA)
-5. Re-publish to the MCP Registry: `mcp-publisher login github`, then `mcp-publisher publish`
-6. Push `main` and the `vX.Y.Z` tag
+4. Refresh the "What's new" section near the top of `README.md` (replace it each release; `CHANGELOG.md` keeps the history)
+5. Optional local check: `node scripts/check-release.mjs vX.Y.Z`
+6. Push `main` and the `vX.Y.Z` tag. The Release workflow runs every test, publishes to npm (trusted publishing, with provenance) and to the MCP Registry (GitHub OIDC), then creates the GitHub Release
 7. Update the GitHub "About" description and mcp.so listing if the tool count changed
+
+If the workflow fails after npm has published, fix the cause and re-run it: the npm step skips a
+version that is already published. Manual fallback: `npm publish --access public` in your own
+terminal, then `mcp-publisher login github` and `mcp-publisher publish`.
 
 ## Ideas / backlog
 
