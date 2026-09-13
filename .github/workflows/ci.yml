@@ -31,3 +31,6 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: End-to-end tests (headless Chrome)
+        run: npm run test:e2e

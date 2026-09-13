@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Fixture: Form</title>
+</head>
+<body>
+    <h1>Fixture form</h1>
+
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" value="prefilled">
+    <button id="greet" type="button">Greet</button>
+    <p id="greeting" aria-live="polite"></p>
+
+    <button id="load-later" type="button">Load later</button>
+    <div id="late-container"></div>
+
+    <script>
+        document.getElementById("greet").addEventListener("click", () => {
+            const name = document.getElementById("name").value.trim() || "stranger";
+            document.getElementById("greeting").textContent = `Hello, ${name}!`;
+        });
+
+        document.getElementById("load-later").addEventListener("click", () => {
+            setTimeout(() => {
+                const late = document.createElement("p");
+                late.id = "late";
+                late.textContent = "Loaded later";
+                document.getElementById("late-container").appendChild(late);
+            }, 700);
+        });
+    </script>
+</body>
+</html>

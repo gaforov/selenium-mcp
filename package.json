@@ -26,6 +26,7 @@
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "test": "npm run build && node --test test/*.test.mjs",
+    "test:e2e": "npm run build && node --test --test-concurrency=1 test/e2e/*.test.mjs",
     "prepack": "npm run build"
   },
   "keywords": [
